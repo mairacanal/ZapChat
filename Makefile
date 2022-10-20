@@ -11,7 +11,7 @@ server:
 client:
 	$(CC) src/client.cpp \
 		src/gtk/window/window.cpp \
-		-o client `pkg-config --cflags --libs gtkmm-4.0` -std=c++17
+		-o client `pkg-config --cflags --libs gtkmm-3.0` -std=c++17
 
 clear:
 	rm server client

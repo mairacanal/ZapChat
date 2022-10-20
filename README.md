@@ -13,7 +13,7 @@
 ## Como Executar
 
 ### Dependências
-- **Debian/Ubuntu:** sudo apt install libgtkmm-4.0-dev
-- **Fedora:** sudo dnf install gtkmm4.0-devel
+- **Debian/Ubuntu:** sudo apt install 
+- **Fedora:** sudo dnf install gtkmm30-devel
 
 ### Como Inicializar o Programa
