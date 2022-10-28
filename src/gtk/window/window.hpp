@@ -19,13 +19,13 @@ public:
     virtual ~Window() = default;
     void set_hierarchy();
     void draw_widgets();
+    void update_widgets();
 
 private:
-    Gtk::Fixed main_fixed, test_f;
+    Gtk::Fixed main_fixed;
     Gtk::Box main_top_box, main_bottom_box;
-    Gtk::Alignment main_alignment_1, main_alignment_2;
     Gtk::ScrolledWindow scrolledWindow;
-    Gtk::Label label;
+    Gtk::TextView text_view;
     Gtk::Button sendButton;
     Gtk::Entry entry;
 };
