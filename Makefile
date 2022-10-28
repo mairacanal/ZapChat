@@ -15,3 +15,11 @@ client:
 
 clear:
 	rm server client
+
+rclient:
+	rm client
+
+make r:
+	make rclient
+	make client
+	./client

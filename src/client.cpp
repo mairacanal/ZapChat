@@ -1,5 +1,4 @@
 #include <gtkmm.h>
-
 #include "gtk/window/window.hpp"
 
 int main(int argc, char* argv[])
