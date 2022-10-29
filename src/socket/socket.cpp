@@ -51,3 +51,7 @@ void Socket::closed(){
         throw std::runtime_error("Erro ao fechar o socket");
     
 }
+
+int Socket::getFd(){
+    return fd;
+}

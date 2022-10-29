@@ -25,7 +25,8 @@ class Server {
     public:
         void Setup();
         void ThreadHandlerRoutine();
-        Server(std::string configFilePath);
+        Server();
         void Run();
+        void Kill();
         void ClientHandlerLoop(int currConnectionFileDescriptor);
 };

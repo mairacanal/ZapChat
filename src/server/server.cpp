@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-Server::Server(std::string configFilePath){
+Server::Server(){
     serverSocket = new Socket(std::string(""), PORT);
 }
 
@@ -48,6 +48,14 @@ void Server::ClientHandlerLoop(int currConnectionFileDescriptor){
             printf("Enviando para o cliente  %d: %s\n", client, message);
         }
     };
+}
+
+void Server::Kill() {
+    isRunning = false;
+    for (auto client : connections) {
+        send(client, "Fechando o servidor", MAX_MESSAGE_SIZE, 0);
+        close(client);
+    }
 }
 
 void Server::Run(){

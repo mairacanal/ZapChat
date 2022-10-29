@@ -26,4 +26,5 @@ class Socket {
         bool accept(int &targetFileDescriptor);
         void connect();
         void closed();
+        int getFd();
 };
