@@ -4,7 +4,7 @@
 
 - Felipe de Alcântara Tomé - 
 - Francisco
-- Luís
+- Luiz Henrique Pereira - 11918539
 - Maíra de Souza Canal - 11819403
 - João Augusto
 
