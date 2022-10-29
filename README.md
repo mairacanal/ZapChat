@@ -2,11 +2,11 @@
 
 ## Integrantes
 
-- Felipe de Alcântara Tomé - 
-- Francisco
+- Felipe de Alcântara Tomé - 11800970 
+- Francisco Reis Nogueira - 11954374
 - Luiz Henrique Pereira - 11918539
 - Maíra de Souza Canal - 11819403
-- João Augusto
+- João Augusto Fernandes Barbosa - 11953348
 
 ## Sobre o Trabalho
 
