@@ -9,9 +9,7 @@
 #include <vector>
 #include "../socket/socket.hpp"
 
-int MAX_MESSAGE_SIZE = 256 ;
-int PORT = 4040;
-int MAX_CONNECTIONS = 10;
+
 
 
 class Server {

@@ -20,10 +20,12 @@ Socket::~Socket(){
 }
 
 void Socket::bind(){
-    int option = 1;
-    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof option) == 0)
-        if (::bind(fd, (struct sockaddr *)&socketAddr, sizeof(socketAddr)) == 0)
-            return;
+    int set_true = 1;
+    if (::bind(fd, (struct sockaddr *)&socketAddr, sizeof(socketAddr)) == 0)
+        return;
+
+    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set_true, sizeof set_true) != -1)
+        return;
     
     throw std::runtime_error("Erro no Bind");
     

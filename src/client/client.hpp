@@ -18,12 +18,12 @@ class Client {
     public:
         int maxMessageSize;
         Client(int port, int maxMessageSize, std::string address, std::string user);
-        void OnReceive(char* message);
-        void OnConnect(char* message);
+        void Receive(char* message);
+        void Connect(char* message);
         static Client* GetInstance();
         static Client* GetInstance(int port, int maxMessageSize, std::string address, std::string user);
         void Disconnect();
         void SendMessage(std::string message);
         void Run();
-        void Disconnect();
+        ~Client();
 };

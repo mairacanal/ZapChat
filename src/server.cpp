@@ -9,8 +9,8 @@ void Kill(int) {
     exit(0);
 }
 
-Server* server;
 int main() {
+    printf("Cliente Criado!");
     server = new Server();
     std::signal(SIGINT, Kill);
     std::signal(SIGTERM, Kill);

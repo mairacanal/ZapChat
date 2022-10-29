@@ -3,6 +3,10 @@
 #include <algorithm>
 #include <iostream>
 
+int MAX_MESSAGE_SIZE = 256 ;
+int PORT = 4040;
+int MAX_CONNECTIONS = 10;
+
 Server::Server(){
     serverSocket = new Socket(std::string(""), PORT);
 }
