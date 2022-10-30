@@ -19,14 +19,14 @@
 ## Como Executar
 ### Compilação: Comandos do Makefile:
 
-	 `make all`: compila todos os arquivos necessários<br/>
-	 `make clear`: limpa os arquivos desnecessários<br/>
+	 make all: compila todos os arquivos necessários
+	 make clear: limpa os arquivos desnecessários
 	
 ### Execução: Após o make all, no root do arquivo:
 	Inicia-se o server:
-		- `./server`
+		- ./server
 	Inicia-se o client:
-		- `./client`
+		- ./client
 
 ### Dependências
 - **Debian/Ubuntu:** sudo apt-get install libgtkmm-3.0-dev
