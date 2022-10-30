@@ -15,13 +15,5 @@ client:
 		src/socket/socket.cpp \
 		-o client `pkg-config --cflags --libs gtkmm-3.0` -std=c++17
 
-clear:
-	rm server client
-
-rclient:
-	rm client
-
-make r:
-	make rclient
-	make client
-	./client
+clean:
+	rm client server
