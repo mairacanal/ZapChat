@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gtkmm.h>
-#include "../../client/client.hpp"
+#include "../client/client.hpp"
 
 /**
  * @brief Main window class, it is the graphical interface for the user to use.
