@@ -118,7 +118,7 @@ void Window::error_login_dialog()
  */
 void Window::error_server_dialog()
 {
-    m_pDialog.reset(new Gtk::MessageDialog(*this, "Server is down!"));
+    m_pDialog.reset(new Gtk::MessageDialog(*this, "Waiting for server..."));
     general_error();
 }
 
@@ -233,7 +233,7 @@ void Window::draw_chat_widgets()
     entry.set_size_request(360, 70);
     entry.set_visibility(true);
     entry.set_can_focus(true);
-    entry.set_placeholder_text("Type a message of 70 chars");
+    entry.set_placeholder_text("Maximum length of 70 characters");
     entry.set_max_length(70);
 
     // Send Button
@@ -304,8 +304,10 @@ void Window::on_send_button_clicked()
 {
     const Glib::ustring message = client.get_username() + ": " + entry.get_text();
 
-    client.send_message(message);
-    entry.set_text("");
+    if(entry.get_text() != "") {
+        client.send_message(message);
+        entry.set_text("");
+    }
 }
 
 void Window::server_is_down()
