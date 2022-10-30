@@ -1,5 +1,5 @@
 #include "client.hpp"
-#include "../gtk/window/window.hpp"
+#include "../gtk/window.hpp"
 
 /**
  * @brief Construct a new Client:: Client object

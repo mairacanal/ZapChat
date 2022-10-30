@@ -1,5 +1,5 @@
 #include <gtkmm/application.h>
-#include "gtk/window/window.hpp"
+#include "gtk/window.hpp"
 
 /**
  * @brief Main function for the client
