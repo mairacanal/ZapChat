@@ -59,7 +59,7 @@ void Client::run(Window* caller)
         while (socket->connect() == -1) { }
     }
 
-    // lê a mensagem inicial do servidor
+    // Read the inital message from server
     read(socket->get_fd(), initialMessage, sizeof(initialMessage));
 
     if (std::strcmp(initialMessage, "Connection succeed")) {
@@ -69,7 +69,7 @@ void Client::run(Window* caller)
 
     connect_client();
 
-    // loop principal de comunicação
+    // Main comunication loop
     while (isRunning) {
         char message[MAX_MESSAGE_SIZE];
         Glib::Threads::Mutex::Lock lock(mutex);
