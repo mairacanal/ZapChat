@@ -63,7 +63,7 @@ void Client::Run()
 void Client::Connect(char* message)
 {
     std::string conected = user + " joined the chat!";
-    conected.resize(maxMessageSize);//Setup the message for the maxsize
+    conected.resize(maxMessageSize);// Setup the message for the maxsize
 }
 
 // Message received by client
