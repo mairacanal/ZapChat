@@ -59,7 +59,7 @@ void Server::clientHandler(int fd)
 
         receivedBytes = recv(fd, message, MAX_MESSAGE_SIZE, 0);
 
-        if (receivedBytes == -1) break;
+        if (receivedBytes <= 0) break;
 
         std::cout << "From client " << fd << ": " << message << std::endl;
 
