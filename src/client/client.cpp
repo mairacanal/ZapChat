@@ -56,8 +56,7 @@ void Client::run(Window* caller)
 
     if (socket->connect() == -1) {
         caller->server_is_down();
-        while (socket->connect() == -1)
-            ;
+        while (socket->connect() == -1) { }
     }
 
     // lê a mensagem inicial do servidor
