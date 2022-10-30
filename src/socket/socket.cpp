@@ -1,6 +1,10 @@
 #include "socket.hpp"
 
-//Create a Socket based on the Port
+/**
+ * @brief Construct a new Socket:: Socket object
+ * 
+ * @param port Port that the socket is created
+ */
 Socket::Socket(unsigned int port)
 {
     fd = socket(PF_INET, SOCK_STREAM, getprotobyname("tcp")->p_proto);
@@ -22,12 +26,19 @@ Socket::Socket(unsigned int port)
     socketAddr.sin_port = htons(port);//Set port
 }
 
+/**
+ * @brief Destroy the Socket:: Socket object
+ * 
+ */
 Socket::~Socket()
 {
     ::close(fd);
 }
 
-//Estabilish a bind
+/**
+ * @brief Estabilish a bind
+ * 
+ */
 void Socket::bind()
 {
     int set_true = 1;
@@ -49,7 +60,10 @@ void Socket::bind()
     }
 }
 
-//Start the socket listen process
+/**
+ * @brief Start the socket listen process
+ * 
+ */
 void Socket::listen()
 {   
     try{
@@ -62,7 +76,13 @@ void Socket::listen()
     }
 }
 
-//Return a boolean that is true if the accept process ocurred
+/**
+ * @brief Return a boolean that is true if the accept process ocurred
+ * 
+ * @param targetFileDescriptor Value of the file descriptor for the client
+ * @return true if the socket accepts the connection
+ * @return false if the socket does not accepts the connection
+ */
 bool Socket::accept(int& targetFileDescriptor)
 {
     struct sockaddr_storage theirAddr;//Socket of connection
@@ -72,7 +92,11 @@ bool Socket::accept(int& targetFileDescriptor)
     return targetFileDescriptor == -1 ? false : true;
 }
 
-//Estabilish connection
+/**
+ * @brief Estabilish connection
+ * 
+ * @return int 0 -> Success; -1 -> Error
+ */
 int Socket::connect()
 {   
     try{
@@ -86,7 +110,10 @@ int Socket::connect()
     return 0;
 }
 
-//Verify both send and receive processs and shutdown the socket
+/**
+ * @brief Verify both send and receive processs and shutdown the socket
+ * 
+ */
 void Socket::close()
 {   
     try{
@@ -99,7 +126,11 @@ void Socket::close()
     }
 }
 
-//Return file descriptor
+/**
+ * @brief Return file descriptor
+ * 
+ * @return int value of the file descriptor
+ */
 int Socket::getFd()
 {
     return fd;
