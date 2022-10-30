@@ -1,6 +1,10 @@
 #include <gtkmm/application.h>
 #include "gtk/window/window.hpp"
 
+/**
+ * @brief Main function for the client
+ *  
+ */
 int main(int argc, char *argv[])
 {
     auto application = Gtk::Application::create(argc, argv);

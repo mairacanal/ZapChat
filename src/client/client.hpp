@@ -10,6 +10,10 @@
 
 class Window;
 
+/**
+ * @brief Class of the client (user)
+ * 
+ */
 class Client {
 private:
     static constexpr int PORT = 4040;

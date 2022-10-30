@@ -11,6 +11,9 @@ void kill(int)
     exit(0);
 }
 
+/**
+ * @brief Main function for the server
+ */
 int main()
 {
     server = new Server();

@@ -285,11 +285,19 @@ void Window::update_widgets()
     }
 }
 
+/**
+ * @brief Public function to emit a new message recieved or sent
+ * 
+ */
 void Window::notify()
 {
     dispatcher.emit();
 }
 
+/**
+ * @brief Got a message from the server.
+ * 
+ */
 void Window::on_notification_from_client_thread()
 {
     if (clientThread && client.has_stopped())
@@ -300,6 +308,10 @@ void Window::on_notification_from_client_thread()
     update_widgets();
 }
 
+/**
+ * @brief Sends a message (if exists) to the server.
+ * 
+ */
 void Window::on_send_button_clicked()
 {
     const Glib::ustring message = client.get_username() + ": " + entry.get_text();
@@ -310,6 +322,10 @@ void Window::on_send_button_clicked()
     }
 }
 
+/**
+ * @brief Public function to emit if server is down
+ * 
+ */
 void Window::server_is_down()
 {
     serverDispatcher.emit();

@@ -12,6 +12,10 @@
 #include <string>
 #include <iostream>
 
+/**
+ * @brief Class for the socket
+ * 
+ */
 class Socket {
 private:
     static constexpr int MAX_CONNECTIONS = 10;

@@ -11,6 +11,10 @@
 
 #include "../socket/socket.hpp"
 
+/**
+ * @brief Server class.
+ * 
+ */
 class Server {
 private:
     std::vector<int> connections;
