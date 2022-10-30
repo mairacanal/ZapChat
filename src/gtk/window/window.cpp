@@ -1,6 +1,8 @@
 #include "window.hpp"
 
-Window::Window() : main_top_box{Gtk::Orientation::ORIENTATION_VERTICAL}, main_bottom_box{Gtk::Orientation::ORIENTATION_HORIZONTAL}
+Window::Window()
+    : mainTopBox { Gtk::Orientation::ORIENTATION_VERTICAL }
+    , mainBottomBox { Gtk::Orientation::ORIENTATION_HORIZONTAL }
 {
     set_hierarchy();
     draw_widgets();
@@ -10,24 +12,24 @@ Window::Window() : main_top_box{Gtk::Orientation::ORIENTATION_VERTICAL}, main_bo
 void Window::set_hierarchy()
 {
     // Window
-    add(main_fixed);
+    add(mainFixed);
 
     // Fixed
-    main_fixed.add(main_top_box);
-    main_fixed.add(main_bottom_box);
-    main_fixed.move(main_top_box, 0, 0);
-    main_fixed.move(main_bottom_box, 0, 530);
+    mainFixed.add(mainTopBox);
+    mainFixed.add(mainBottomBox);
+    mainFixed.move(mainTopBox, 0, 0);
+    mainFixed.move(mainBottomBox, 0, 530);
 
     // Bottom box
-    main_bottom_box.add(entry);
-    main_bottom_box.add(sendButton);
+    mainBottomBox.add(entry);
+    mainBottomBox.add(sendButton);
 
     // Top box
-    main_top_box.pack_start(scrolledWindow, true, true, 0);
+    mainTopBox.pack_start(scrolledWindow, true, true, 0);
 
     // Scrolled
-    text_view.set_editable(false);
-    scrolledWindow.add(text_view);
+    textView.set_editable(false);
+    scrolledWindow.add(textView);
 
     // Only show the scrollbars when they are necessary.
     scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -35,7 +37,7 @@ void Window::set_hierarchy()
     scrolledWindow.set_vexpand(true);
 
     // Create a text buffer mark for use in update_widgets().
-    auto buffer = text_view.get_buffer();
+    auto buffer = textView.get_buffer();
     buffer->create_mark("last_line", buffer->end(), /* left_gravity= */ true);
 }
 
@@ -49,25 +51,24 @@ void Window::draw_widgets()
     set_resizable(false);
     set_border_width(5);
 
-
     // Fixed
-    main_fixed.set_size_request(430, 600);
-    main_fixed.set_visible(true);
-    main_fixed.set_can_focus(false);
+    mainFixed.set_size_request(430, 600);
+    mainFixed.set_visible(true);
+    mainFixed.set_can_focus(false);
 
     // Scrolled Window
     scrolledWindow.set_size_request(430, 525);
     scrolledWindow.set_visible(true);
 
     // Top Box
-    main_top_box.set_visible(true);
-    main_top_box.set_can_focus(false);
+    mainTopBox.set_visible(true);
+    mainTopBox.set_can_focus(false);
 
     // Bottom Box
-    main_bottom_box.set_size_request(400, 70);
-    main_bottom_box.set_visible(true);
-    main_bottom_box.set_can_focus(false);
-    main_bottom_box.set_spacing(5);
+    mainBottomBox.set_size_request(400, 70);
+    mainBottomBox.set_visible(true);
+    mainBottomBox.set_can_focus(false);
+    mainBottomBox.set_spacing(5);
 
     // Entry
     entry.set_size_request(360, 70);
@@ -83,30 +84,25 @@ void Window::draw_widgets()
     sendButton.set_can_focus(true);
     sendButton.set_focus_on_click(true);
 
-    sendButton.signal_button_release_event().connect
-    (
-        [&](GdkEventButton *)
-        {
+    sendButton.signal_button_release_event().connect(
+        [&](GdkEventButton*) {
             this->update_widgets();
-            return true; 
-        }
-    );
-
+            return true;
+        });
 
     // Text View
-    text_view.set_right_margin(0);
-    text_view.set_bottom_margin(0);
-
+    textView.set_right_margin(0);
+    textView.set_bottom_margin(0);
 }
 
 void Window::update_widgets()
 {
-    auto buffer = text_view.get_buffer();
+    auto buffer = textView.get_buffer();
     buffer->set_text(buffer->get_text() + "MENSAGEM QUE VAI SER RECEBIDA\n");
 
     auto iter = buffer->end();
     iter.set_line_offset(0);
     auto mark = buffer->get_mark("last_line");
     buffer->move_mark(mark, iter);
-    text_view.scroll_to(mark);
+    textView.scroll_to(mark);
 }
