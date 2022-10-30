@@ -17,10 +17,10 @@
 	A definição do socket seguiu o padrão estrutural explicitado em aula, baseado no protocolo TCP.
 	
 ## Como Executar
--Compilação: Comandos do Makefile:
+<strong>-Compilação: Comandos do Makefile:<strong/>
 	<br/>
-	&emsp-make all: compila todos os arquivos necessários<br/>
-	&emsp-make clear: limpa os arquivos desnecessários<br/>
+	-make all: compila todos os arquivos necessários<br/>
+	-make clear: limpa os arquivos desnecessários<br/>
 	
 -Execução: Após o make all, no root do arquivo:
 	Inicia-se o server:
