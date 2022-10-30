@@ -12,14 +12,14 @@ Client::Client()
 
 void Client::connect_client()
 {
-    Glib::ustring connected = ">>" + username + " joined the chat! <<";
-    send_message(connected);
+    message = ">> " + username + " joined the chat! <<";
+    send_message(message);
 }
 
 void Client::disconnect_client()
 {
-    Glib::ustring disconnected = ">>" + username + " exited the chat! <<";
-    send_message(disconnected);
+    message = ">> " + username + " exited the chat! <<";
+    send_message(message);
 }
 
 // Destroy Client
@@ -49,6 +49,7 @@ void Client::run(Window* caller)
     }
 
     connect_client();
+    caller->notify();
 
     // loop principal de comunicação
     while (isRunning) {
@@ -60,7 +61,7 @@ void Client::run(Window* caller)
             break;
         }
 
-        this->message = std::string { message };
+        this->message = Glib::ustring { message };
 
         lock.release();
         caller->notify();
@@ -73,6 +74,7 @@ void Client::send_message(Glib::ustring message) const
 {
     message.resize(MAX_MESSAGE_SIZE);
     send(socket->getFd(), (const void*)message.c_str(), message.size(), 0);
+    message.empty();
 }
 
 void Client::get_message(Glib::ustring* message) const
@@ -84,6 +86,11 @@ void Client::get_message(Glib::ustring* message) const
 void Client::set_username(Glib::ustring user)
 {
     username = user;
+}
+
+Glib::ustring Client::get_username() const
+{
+    return username;
 }
 
 bool Client::has_stopped() const
