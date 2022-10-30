@@ -17,18 +17,44 @@
 	A definição do socket seguiu o padrão estrutural explicitado em aula, baseado no protocolo TCP.
 	
 ## Como Executar
-### Compilação: Comandos do Makefile:
+### Compilação: 
 
-	 make all: compila todos os arquivos necessários
-	 make clear: limpa os arquivos desnecessários
+Comandos do Makefile:
+
+Compilação de todos os arquivos necessários:
+
+```
+make all
+```
+
+Limpa os arquivos:
+
+```
+make clear
+```
 	
-### Execução: Após o make all, no root do arquivo:
-	Inicia-se o server:
-		 ./server
-	Inicia-se o client:
-		 ./client
+### Execução:
+Após o make all, no root do arquivo:
+
+Em um terminal inicia-se o server:
+```
+./server
+```
+	
+Em outro terminal inicia-se o client:
+```
+./client
+```
 
 ### Dependências
-- **Debian/Ubuntu:** sudo apt-get install libgtkmm-3.0-dev
-- **Fedora:** sudo dnf install gtkmm30-devel
+- **Debian/Ubuntu:** 
 
+```
+sudo apt-get install libgtkmm-3.0-dev
+```
+
+- **Fedora:** 
+
+```
+sudo dnf install gtkmm30-devel
+```
