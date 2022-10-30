@@ -10,7 +10,9 @@ server:
 
 client:
 	$(CC) src/client.cpp \
+		src/client/client.cpp \
 		src/gtk/window/window.cpp \
+		src/socket/socket.cpp \
 		-o client `pkg-config --cflags --libs gtkmm-3.0` -std=c++17
 
 clear:
