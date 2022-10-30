@@ -1,74 +1,89 @@
 #include "server.hpp"
-
 #include <algorithm>
 #include <iostream>
 
-int MAX_MESSAGE_SIZE = 256 ;
-int PORT = 4040;
-int MAX_CONNECTIONS = 10;
+constexpr int MAX_MESSAGE_SIZE = 256;
+constexpr int PORT = 4040;
 
-Server::Server(){
-    serverSocket = new Socket(std::string(""), PORT);
+Server::Server()
+{
+    serverSocket = new Socket(PORT);
 }
 
-void Server::ThreadHandlerRoutine(){
-    int connectionFileDescriptor;
-    if (isRunning && !serverSocket->accept(connectionFileDescriptor)) {
+//When the server is running, add new connections to the vector of connections
+void Server::threadHandler()
+{
+    int fd;
+
+    if (isRunning && !serverSocket->accept(fd)) {
         return;
     }
 
-    connections.push_back(connectionFileDescriptor);
-    std::thread currClientThread(&Server::ClientHandlerLoop, this, connectionFileDescriptor);
-    currClientThread.detach();
+    connections.push_back(fd);
+    std::thread clientThread(&Server::clientHandler, this, fd);
+    clientThread.detach();
 }
 
-void Server::Setup(){
+//Set up the server connection by the bind and listen
+void Server::setup()
+{
     serverSocket->bind();
     serverSocket->listen();
 }
 
-void Server::ClientHandlerLoop(int currConnectionFileDescriptor){
-    send(currConnectionFileDescriptor, "Conexão recebida com sucesso", MAX_MESSAGE_SIZE , 0);
-    printf("Iniciando conexão com o cliente %d\n", currConnectionFileDescriptor);
+//Generate a log when the connection is successful and start the loop for receive new messages and foward/broadcast them
+void Server::clientHandler(int fd)
+{
+    send(fd, "Connection succeed", MAX_MESSAGE_SIZE, 0);
+    std::cout << "Initializing connection with client" << fd << std::endl;
 
     int receivedBytes;
+
     while (isRunning) {
         char message[MAX_MESSAGE_SIZE];
-        std::memset(&message, 0, MAX_MESSAGE_SIZE); 
+        std::memset(&message, 0, MAX_MESSAGE_SIZE);
+
+        receivedBytes = recv(fd, message, MAX_MESSAGE_SIZE, 0);
+
+        if (receivedBytes == -1) break;
+
+        std::cout << "From client " << fd << ": " << message << std::endl;
 
 
-        receivedBytes = recv(currConnectionFileDescriptor, message, MAX_MESSAGE_SIZE, 0);
-
-        if (receivedBytes == -1){
-            printf("Erro no recebimento da mensagem!\nAbortando Execução..\n");
-            isRunning = false;
-            break;
-        };
-
-        printf("Recebido do cliente %d: %s\n", currConnectionFileDescriptor, message);
-
+        //For every client connected, foward the message
         for (auto client : connections) {
             send(client, message, MAX_MESSAGE_SIZE, 0);
-            printf("Enviando para o cliente  %d: %s\n", client, message);
+            std::cout << "To client " << client << ": " << message << std::endl;
         }
-    };
+    }
+
+    connections.erase(std::remove(connections.begin(), connections.end(), fd), connections.end());
+    std::cout << "Closing connection to client " << fd << std::endl;
+    close(fd);
 }
 
-void Server::Kill() {
+// Set the bool of running to false to shutdown the server
+void Server::kill()
+{
     isRunning = false;
+
     for (auto client : connections) {
-        send(client, "Fechando o servidor", MAX_MESSAGE_SIZE, 0);
+        send(client, "Closing server", MAX_MESSAGE_SIZE, 0);
         close(client);
     }
+
+    std::cout << "Closing server" << std::endl;
+    serverSocket->close();
+    delete serverSocket;
 }
 
-void Server::Run(){
+//Initialize the server and main loop
+void Server::run()
+{
     isRunning = true;
-    Setup();
+    setup();
 
-    while (isRunning){
-        ThreadHandlerRoutine();
-    }
-    
-    
+    //While the server is running, handle the connections and send/receive process 
+    while (isRunning)
+        threadHandler();
 }

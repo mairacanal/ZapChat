@@ -1,4 +1,5 @@
 #pragma once
+
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -9,22 +10,24 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
+#include <iostream>
 
 class Socket {
-    private:
-        int fd;
-        struct sockaddr_in socketAddr;
-        int maxConnections;
-    public:
-        Socket(std::string address, unsigned int port);
+private:
+    static constexpr int MAX_CONNECTIONS = 10;
+    int fd;
+    struct sockaddr_in socketAddr;
 
-        ~Socket();
-        //Bind, listen, connect, accept
+public:
+    Socket(unsigned int port);
 
-        void bind();
-        void listen();
-        bool accept(int &targetFileDescriptor);
-        void connect();
-        void closed();
-        int getFd();
+    ~Socket();
+    // Bind, listen, connect, accept
+
+    void bind();
+    void listen();
+    bool accept(int& targetFileDescriptor);
+    void connect();
+    void close();
+    int getFd();
 };

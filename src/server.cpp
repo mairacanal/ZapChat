@@ -1,20 +1,25 @@
 #include "server/server.hpp"
 #include <csignal>
 #include <iostream>
+
 Server* server;
 
-void Kill(int) {
-    server->Kill();
+void kill(int)
+{
+    server->kill();
     delete server;
     exit(0);
 }
 
-int main() {
-    printf("Cliente Criado!");
+int main()
+{
     server = new Server();
-    std::signal(SIGINT, Kill);
-    std::signal(SIGTERM, Kill);
-    std::signal(SIGHUP, Kill);
-    server->Run();
+
+    std::signal(SIGINT, kill);
+    std::signal(SIGTERM, kill);
+    std::signal(SIGHUP, kill);
+
+    server->run();
+
     return 0;
 }
