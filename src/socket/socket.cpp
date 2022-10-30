@@ -6,8 +6,14 @@ Socket::Socket(unsigned int port)
     fd = socket(PF_INET, SOCK_STREAM, getprotobyname("tcp")->p_proto);
 
     // Criação do socket retorna -1 caso não tenha sido efetuada corretamente
+    try{
     if (fd == -1)
-        throw std::runtime_error("Erro na criação do socket");
+        throw std::runtime_error("Socket's Error");
+    }
+    catch(std::runtime_error err){
+        std::cout << "Socket's Error";
+        exit(0);
+    }
 
     std::memset(&socketAddr, 0, sizeof(socketAddr));
 
@@ -31,17 +37,29 @@ void Socket::bind()
         return;
 
     //Verify the behavior of socket's option
+    try{
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set_true, sizeof set_true) != -1)
         return;
 
     throw std::runtime_error("Bind's Error");
+    }
+    catch(std::runtime_error err){
+        std::cout << "Bind's Error";
+        exit(0);
+    }
 }
 
 //Start the socket listen process
 void Socket::listen()
-{
+{   
+    try{
     if (::listen(fd, MAX_CONNECTIONS) == -1)
         throw std::runtime_error("Listen's Error");
+    }
+    catch(std::runtime_error err){
+        std::cout << "Listen's Error";
+        exit(0);
+    }
 }
 
 //Return a boolean that is true if the accept process ocurred
@@ -70,9 +88,15 @@ int Socket::connect()
 
 //Verify both send and receive processs and shutdown the socket
 void Socket::close()
-{
+{   
+    try{
     if (shutdown(fd, 2) == -1)
         throw std::runtime_error("Socket's Shutdown Error");
+    }
+    catch(std::runtime_error err){
+        std::cout << "Sockets error";
+        exit(0);
+    }
 }
 
 //Return file descriptor

@@ -216,7 +216,7 @@ void Window::draw_chat_widgets()
     entry.set_size_request(360, 70);
     entry.set_visibility(true);
     entry.set_can_focus(true);
-    entry.set_placeholder_text("Digite uma mensagem de 70 chars");
+    entry.set_placeholder_text("Type a message of 70 chars");
     entry.set_max_length(70);
 
     // Send Button
