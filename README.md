@@ -13,7 +13,7 @@
 - **Compiladores:** g++ 11 e 12
 - **Descrição:**<br>
 	O presente trabalho baseia-se na comunicação de diversos clientes através de um server, utilizando a lógica de implementação por Socket.
-	Os clientes possuem sockets que recebem identificação dentro do server. A cada envio de mensagem, o servidor é responsável por encaminhas o texto recebido à todos os clientes conectados nele naquele momento.
+	Os clientes possuem sockets que recebem identificação dentro do server. A cada envio de mensagem, o servidor é responsável por encaminhas o texto recebido a todos os clientes conectados nele naquele momento.
 	A definição do socket seguiu o padrão estrutural explicitado em aula, baseado no protocolo TCP. A ideia de seu funcionamento foi beaseada  no Internet relay chat, um sistema de bate-papo baseado em texto que permite discussões entre qualquer número de participantes nos chamados canais de conversação. Na nossa implementação, o número de participantes foi limitado a 10.
 	
 ## Como Executar
