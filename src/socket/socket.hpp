@@ -8,13 +8,13 @@
 #include <unistd.h>
 
 #include <cstring>
+#include <iostream>
 #include <stdexcept>
 #include <string>
-#include <iostream>
 
 /**
  * @brief Class for the socket
- * 
+ *
  */
 class Socket {
 private:

@@ -3,7 +3,6 @@
 
 /**
  * @brief Construct a new Client:: Client object
- *
  */
 Client::Client()
     : username {}
@@ -13,8 +12,7 @@ Client::Client()
 }
 
 /**
- * @brief Sends a message when a user connects into the server
- *
+ * @brief Send a standard message when a user connects into the server
  */
 void Client::connect_client()
 {
@@ -23,19 +21,16 @@ void Client::connect_client()
 }
 
 /**
- * @brief Sends a message when a user disconnects the server
- *
+ * @brief Send a standard message when a user disconnects the server
  */
 void Client::disconnect_client()
 {
     message = ">> " + username + " exited the chat! <<";
     send_message(message);
-    exit(0);
 }
 
 /**
  * @brief Destroy the Client:: Client object
- *
  */
 Client::~Client()
 {
@@ -43,9 +38,9 @@ Client::~Client()
 }
 
 /**
- * @brief Starts the client, connects it to the server
- *
- * @param caller Window reference to use the dispatchers
+ * @brief Starts the client, connects it to the server and maintains the connection
+ * by receiving messages
+ * @param caller Window reference to be used by dispatchers
  */
 void Client::run(Window* caller)
 {
@@ -96,8 +91,7 @@ void Client::run(Window* caller)
 
 /**
  * @brief Sends a message to the socket
- *
- * @param message String of the message that the user has typed
+ * @param message String with the message that the user has typed
  */
 void Client::send_message(Glib::ustring message) const
 {
@@ -107,9 +101,8 @@ void Client::send_message(Glib::ustring message) const
 }
 
 /**
- * @brief Recive a message from the server
- *
- * @param message String of the message
+ * @brief Get message from the server to the GUI
+ * @param message String of the message to be displayed in the window
  */
 void Client::get_message(Glib::ustring* message) const
 {
@@ -118,8 +111,7 @@ void Client::get_message(Glib::ustring* message) const
 }
 
 /**
- * @brief Sets the user's name.
- *
+ * @brief Set the user's name.
  * @param user String of the user's name.
  */
 void Client::set_username(Glib::ustring user)
@@ -129,7 +121,6 @@ void Client::set_username(Glib::ustring user)
 
 /**
  * @brief Retrives the username
- *
  * @return Glib::ustring username.
  */
 Glib::ustring Client::get_username() const
@@ -139,7 +130,6 @@ Glib::ustring Client::get_username() const
 
 /**
  * @brief Check if the server is still running
- *
  * @return true if the server IS NOT running
  * @return false if the server IS running
  */

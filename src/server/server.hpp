@@ -13,7 +13,7 @@
 
 /**
  * @brief Server class.
- * 
+ *
  */
 class Server {
 private:

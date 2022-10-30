@@ -1,32 +1,34 @@
 #pragma once
 
-#include <gtkmm.h>
 #include "../client/client.hpp"
+#include <gtkmm.h>
 
 /**
  * @brief Main window class, it is the graphical interface for the user to use.
- * 
  */
 class Window : public Gtk::Window {
 
 public:
     Window();
+
     void notify();
     void server_is_down();
+
 private:
-    // Signal Handler
+    // Signal Handlers
     void on_send_button_clicked();
-    void update_widgets();
-    void complete_login();
-    bool kill_window(GdkEventAny *event);
+    bool kill_window(GdkEventAny* event);
 
     // Dispatcher Handler
     void on_notification_from_client_thread();
 
+    void update_widgets();
+    void complete_login();
+
     void set_login_hierarchy();
     void draw_login_widgets();
     void clear_login_widgets();
-    
+
     void set_chat_hierarchy();
     void draw_chat_widgets();
 
@@ -47,8 +49,7 @@ private:
 
     Glib::Dispatcher dispatcher;
     Glib::Dispatcher serverDispatcher;
-    Client client;
     Glib::Threads::Thread* clientThread;
 
-    Glib::ustring lastMessage;
+    Client client;
 };

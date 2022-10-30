@@ -1,8 +1,7 @@
 #include "window.hpp"
 
 /**
- * @brief Constructor for window class
- *
+ * @brief Constructor for Window class
  */
 Window::Window()
     : mainTopBox { Gtk::Orientation::ORIENTATION_VERTICAL }
@@ -16,13 +15,12 @@ Window::Window()
     draw_login_widgets();
     show_all_children();
 
-    serverDispatcher.connect(
-        sigc::mem_fun(*this, &Window::error_server_dialog));
+    // Signal for Error dialogs
+    serverDispatcher.connect(sigc::mem_fun(*this, &Window::error_server_dialog));
 }
 
 /**
  * @brief Creates the widgets hierarchy for the login screen
- *
  */
 void Window::set_login_hierarchy()
 {
@@ -39,8 +37,7 @@ void Window::set_login_hierarchy()
 }
 
 /**
- * @brief Draws each widget, sets size and specific details
- *
+ * @brief Draws each widget, sets its size and specific details
  */
 void Window::draw_login_widgets()
 {
@@ -72,12 +69,12 @@ void Window::draw_login_widgets()
 
     // Button
     loginUserSendButton.set_size_request(300, 50);
-    loginUserSendButton.set_label("Send");
+    loginUserSendButton.set_label("Login");
     loginUserSendButton.set_visible(true);
     loginUserSendButton.set_can_focus(true);
     loginUserSendButton.set_focus_on_click(true);
 
-    // Function that runs when the user clicks the `send` button
+    // Function that runs when the user clicks the `Login` button
     loginUserSendButton.signal_button_release_event().connect(
         [&](GdkEventButton*) {
             // Get buffer content
@@ -118,6 +115,9 @@ void Window::error_server_dialog()
     general_error();
 }
 
+/**
+ * @brief Runs the necessary commands to display any message dialog.
+ */
 void Window::general_error()
 {
     pDialog->set_modal(true);
@@ -128,8 +128,7 @@ void Window::general_error()
 }
 
 /**
- * @brief When user enters a valid username the screen is redrawn
- *
+ * @brief When user enters a valid username, the screen is redrawn to the chat
  */
 void Window::complete_login()
 {
@@ -139,14 +138,18 @@ void Window::complete_login()
     set_chat_hierarchy();
     draw_chat_widgets();
 
+    // Signal Handler for the Send button
     sendButton.signal_clicked().connect(
         sigc::mem_fun(*this, &Window::on_send_button_clicked));
 
+    // Dispatcher Handler to connect the Client backend to the GUI
     dispatcher.connect(
         sigc::mem_fun(*this, &Window::on_notification_from_client_thread));
 
+    // Signal Handler to kill the window
     signal_delete_event().connect(sigc::mem_fun(this, &Window::kill_window));
 
+    // Create thread for the Client backend
     clientThread = Glib::Threads::Thread::create(
         sigc::bind(sigc::mem_fun(client, &Client::run), this));
 
@@ -155,7 +158,6 @@ void Window::complete_login()
 
 /**
  * @brief Clears all the login widgets that were being used.
- *
  */
 void Window::clear_login_widgets()
 {
@@ -167,7 +169,6 @@ void Window::clear_login_widgets()
 
 /**
  * @brief Setup the chat screen's widgets hierarchy
- *
  */
 void Window::set_chat_hierarchy()
 {
@@ -196,7 +197,6 @@ void Window::set_chat_hierarchy()
 
 /**
  * @brief Draws the chat screen's widgets
- *
  */
 void Window::draw_chat_widgets()
 {
@@ -249,7 +249,7 @@ void Window::draw_chat_widgets()
     textView.set_pixels_below_lines(2);
     textView.set_pixels_inside_wrap(2);
     textView.set_wrap_mode(Gtk::WrapMode::WRAP_WORD_CHAR);
-    //
+
     // Create a text buffer mark for use in update_widgets().
     auto buffer = textView.get_buffer();
     buffer->create_mark("last_line", buffer->end(), /* left_gravity= */ true);
@@ -258,8 +258,7 @@ void Window::draw_chat_widgets()
 }
 
 /**
- * @brief Update the textview widget to recive messages
- *
+ * @brief Update the textView widget to display the new messages
  */
 void Window::update_widgets()
 {
@@ -270,8 +269,6 @@ void Window::update_widgets()
     auto buffer = textView.get_buffer();
     buffer->set_text(buffer->get_text() + message_from_client_thread + "\n");
 
-    lastMessage = message_from_client_thread;
-
     // Scroll the last inserted line into view
     auto iter = buffer->end();
     iter.set_line_offset(0);
@@ -281,8 +278,7 @@ void Window::update_widgets()
 }
 
 /**
- * @brief Public function to emit a new message recieved or sent
- *
+ * @brief Public function to emit a signal when a new message is received
  */
 void Window::notify()
 {
@@ -290,8 +286,7 @@ void Window::notify()
 }
 
 /**
- * @brief Got a message from the server.
- *
+ * @brief Notifies that a message came from the server and update the widgets
  */
 void Window::on_notification_from_client_thread()
 {
@@ -304,31 +299,28 @@ void Window::on_notification_from_client_thread()
 
 /**
  * @brief Sends a message (if exists) to the server.
- *
  */
 void Window::on_send_button_clicked()
 {
-    const Glib::ustring message = client.get_username() + ": " + entry.get_text();
-
     if (entry.get_text() != "") {
-        client.send_message(message);
+        client.send_message(client.get_username() + ": " + entry.get_text());
         entry.set_text("");
     }
 }
 
 /**
  * @brief Public function to emit if server is down
- *
  */
 void Window::server_is_down()
 {
     serverDispatcher.emit();
 }
 
-bool Window::kill_window(GdkEventAny *event)
+/**
+ * @brief Disconnects client from the server and kills the client process
+ */
+bool Window::kill_window(GdkEventAny* event)
 {
     client.disconnect_client();
-    Gtk::Main::quit();
-
-    return false;
+    exit(0);
 }

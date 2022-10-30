@@ -1,9 +1,5 @@
 #pragma once
 
-#include <csignal>
-#include <iostream>
-#include <sstream>
-
 #include "gtkmm.h"
 
 #include "../socket/socket.hpp"
@@ -11,12 +7,14 @@
 class Window;
 
 /**
- * @brief Class of the client (user)
- * 
+ * @brief Class of the Client (user)
  */
 class Client {
 private:
+    // Port to instanciate a socket
     static constexpr int PORT = 4040;
+
+    // Maximum message size allowed
     static constexpr int MAX_MESSAGE_SIZE = 256;
 
     // Synchronizes access to member data
@@ -37,9 +35,11 @@ public:
     // Thread function
     void run(Window* caller);
 
+    // Manage messages
     void send_message(Glib::ustring message) const;
     void get_message(Glib::ustring* message) const;
 
+    // Manage username
     void set_username(Glib::ustring user);
     Glib::ustring get_username() const;
 

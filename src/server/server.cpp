@@ -7,7 +7,7 @@ constexpr int PORT = 4040;
 
 /**
  * @brief Construct a new Server:: Server object
- * 
+ *
  */
 Server::Server()
 {
@@ -16,7 +16,7 @@ Server::Server()
 
 /**
  * @brief When the server is running, add new connections to the vector of connections
- * 
+ *
  */
 void Server::thread_handler()
 {
@@ -33,7 +33,7 @@ void Server::thread_handler()
 
 /**
  * @brief Set up the server connection by the bind and listen
- * 
+ *
  */
 void Server::setup()
 {
@@ -43,7 +43,7 @@ void Server::setup()
 
 /**
  * @brief Generate a log when the connection is successful and start the loop for receive new messages and foward/broadcast them
- * 
+ *
  * @param fd client id
  */
 void Server::client_handler(int fd)
@@ -59,11 +59,12 @@ void Server::client_handler(int fd)
 
         receivedBytes = recv(fd, message, MAX_MESSAGE_SIZE, 0);
 
-        if (receivedBytes <= 0) break;
+        if (receivedBytes <= 0)
+            break;
 
         std::cout << "From client " << fd << ": " << message << std::endl;
 
-        //For every client connected, foward the message
+        // For every client connected, foward the message
         for (auto client : connections) {
             send(client, message, MAX_MESSAGE_SIZE, 0);
             std::cout << "To client " << client << ": " << message << std::endl;
@@ -77,7 +78,7 @@ void Server::client_handler(int fd)
 
 /**
  * @brief Set the bool of running to false to shutdown the server
- * 
+ *
  */
 void Server::kill()
 {
@@ -95,14 +96,14 @@ void Server::kill()
 
 /**
  * @brief Initialize the server and main loop
- * 
+ *
  */
 void Server::run()
 {
     isRunning = true;
     setup();
 
-    //While the server is running, handle the connections and send/receive process 
+    // While the server is running, handle the connections and send/receive process
     while (isRunning)
         thread_handler();
 

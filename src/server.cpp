@@ -1,9 +1,11 @@
 #include "server/server.hpp"
 #include <csignal>
-#include <iostream>
 
 Server* server;
 
+/**
+ * @brief Kill server and free resources
+ */
 void kill(int)
 {
     server->kill();

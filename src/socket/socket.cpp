@@ -2,7 +2,7 @@
 
 /**
  * @brief Construct a new Socket:: Socket object
- * 
+ *
  * @param port Port that the socket is created
  */
 Socket::Socket(unsigned int port)
@@ -10,25 +10,25 @@ Socket::Socket(unsigned int port)
     fd = socket(PF_INET, SOCK_STREAM, getprotobyname("tcp")->p_proto);
 
     // Criação do socket retorna -1 caso não tenha sido efetuada corretamente
-    try{
-    if (fd == -1)
-        throw std::runtime_error("Socket's Error");
-    }
-    catch(std::runtime_error err){
+    try {
+        if (fd == -1)
+            throw std::runtime_error("Socket's Error");
+    } catch (std::runtime_error err) {
         std::cout << "Socket's Error";
         exit(0);
     }
 
     std::memset(&socketAddr, 0, sizeof(socketAddr));
 
-    socketAddr.sin_family = AF_INET;//Address format
-    socketAddr.sin_addr.s_addr = htonl(INADDR_ANY);//The socket accepts connections to all the IPs
-    socketAddr.sin_port = htons(port);//Set port
+    // Address format
+    socketAddr.sin_family = AF_INET;
+    socketAddr.sin_addr.s_addr = htonl(INADDR_ANY); // The socket accepts connections to all the IPs
+    socketAddr.sin_port = htons(port); // Set port
 }
 
 /**
  * @brief Destroy the Socket:: Socket object
- * 
+ *
  */
 Socket::~Socket()
 {
@@ -37,24 +37,22 @@ Socket::~Socket()
 
 /**
  * @brief Estabilish a bind
- * 
+ *
  */
 void Socket::bind()
 {
     int set_true = 1;
 
-    //Verify bind
+    // Verify bind
     if (!::bind(fd, (struct sockaddr*)&socketAddr, sizeof(socketAddr)))
         return;
 
-    //Verify the behavior of socket's option
-    try{
-    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set_true, sizeof set_true) != -1)
-        return;
-
-    throw std::runtime_error("Bind's Error");
-    }
-    catch(std::runtime_error err){
+    // Verify the behavior of socket's option
+    try {
+        if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &set_true, sizeof set_true) != -1)
+            return;
+        throw std::runtime_error("Bind's Error");
+    } catch (std::runtime_error err) {
         std::cout << "Bind's Error";
         exit(0);
     }
@@ -62,15 +60,14 @@ void Socket::bind()
 
 /**
  * @brief Start the socket listen process
- * 
+ *
  */
 void Socket::listen()
-{   
-    try{
-    if (::listen(fd, MAX_CONNECTIONS) == -1)
-        throw std::runtime_error("Listen's Error");
-    }
-    catch(std::runtime_error err){
+{
+    try {
+        if (::listen(fd, MAX_CONNECTIONS) == -1)
+            throw std::runtime_error("Listen's Error");
+    } catch (std::runtime_error err) {
         std::cout << "Listen's Error";
         exit(0);
     }
@@ -78,33 +75,32 @@ void Socket::listen()
 
 /**
  * @brief Return a boolean that is true if the accept process ocurred
- * 
+ *
  * @param targetFileDescriptor Value of the file descriptor for the client
  * @return true if the socket accepts the connection
  * @return false if the socket does not accepts the connection
  */
 bool Socket::accept(int& targetFileDescriptor)
 {
-    struct sockaddr_storage theirAddr;//Socket of connection
+    struct sockaddr_storage theirAddr; // Socket of connection
 
     socklen_t addrSize = sizeof theirAddr;
-    targetFileDescriptor = ::accept(fd, (struct sockaddr*)&theirAddr, &addrSize); //Get a fileDescriptor for the client
+    targetFileDescriptor = ::accept(fd, (struct sockaddr*)&theirAddr, &addrSize); // Get a fileDescriptor for the client
     return targetFileDescriptor == -1 ? false : true;
 }
 
 /**
  * @brief Estabilish connection
- * 
+ *
  * @return int 0 -> Success; -1 -> Error
  */
 int Socket::connect()
-{   
-    try{
-        if (::connect(fd, (struct sockaddr*)&socketAddr, sizeof(socketAddr)) == -1){
-                throw std::runtime_error("Connection's Error");
-            }
+{
+    try {
+        if (::connect(fd, (struct sockaddr*)&socketAddr, sizeof(socketAddr)) == -1) {
+            throw std::runtime_error("Connection's Error");
         }
-    catch(std::runtime_error error){
+    } catch (std::runtime_error error) {
         return -1;
     }
     return 0;
@@ -112,15 +108,14 @@ int Socket::connect()
 
 /**
  * @brief Verify both send and receive processs and shutdown the socket
- * 
+ *
  */
 void Socket::close()
-{   
-    try{
-    if (shutdown(fd, 2) == -1)
-        throw std::runtime_error("Socket's Shutdown Error");
-    }
-    catch(std::runtime_error err){
+{
+    try {
+        if (shutdown(fd, 2) == -1)
+            throw std::runtime_error("Socket's Shutdown Error");
+    } catch (std::runtime_error err) {
         std::cout << "Sockets error";
         exit(0);
     }
@@ -128,7 +123,7 @@ void Socket::close()
 
 /**
  * @brief Return file descriptor
- * 
+ *
  * @return int value of the file descriptor
  */
 int Socket::get_fd()
