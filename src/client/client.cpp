@@ -6,12 +6,12 @@ Client* Client::instance { nullptr };
 std::mutex Client::mutex;
 
 // Instantiating the client
-Client* Client::GetInstance(int port, int maxMessageSize, std::string user)
+Client* Client::GetInstance(int port, int maxMessageSize, std::string address, std::string user)
 {
     std::lock_guard<std::mutex> lock(mutex);
     //Create the instance of client and return it
     if (instance == nullptr)
-        instance = new Client(port, maxMessageSize, user);
+        instance = new Client(port, maxMessageSize, address, user);
 
     return instance;
 }
@@ -26,12 +26,13 @@ Client* Client::GetInstance()
 }
 
 // Client constructor class
-Client::Client(int port, int maxMessageSize, std::string user)
+Client::Client(int port, int maxMessageSize, std::string address, std::string user)
     : maxMessageSize { maxMessageSize }
     , port { port }
     , user { user }
+    , address { address }
 {
-    ClientSocket = new Socket(port);
+    ClientSocket = new Socket(address, port);
 };
 
 // Main execution system
@@ -89,5 +90,5 @@ void Client::SendMessage(std::string message)
 // Destroy Client
 Client::~Client()
 {
-    delete ClientSocket;
+    //delete ClientSocket;
 }

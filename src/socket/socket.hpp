@@ -15,11 +15,12 @@
 class Socket {
 private:
     static constexpr int MAX_CONNECTIONS = 10;
+    std::string address;
     int fd;
     struct sockaddr_in socketAddr;
 
 public:
-    Socket(unsigned int port);
+    Socket(std::string address, unsigned int port);
 
     ~Socket();
     // Bind, listen, connect, accept

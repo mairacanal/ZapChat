@@ -1,7 +1,7 @@
 #include "socket.hpp"
 
 //Create a Socket based on the Port
-Socket::Socket(unsigned int port)
+Socket::Socket(std::string address, unsigned int port) : address { address }
 {
     fd = socket(PF_INET, SOCK_STREAM, getprotobyname("tcp")->p_proto);
 
@@ -12,7 +12,7 @@ Socket::Socket(unsigned int port)
     std::memset(&socketAddr, 0, sizeof(socketAddr));
 
     socketAddr.sin_family = AF_INET;//Address format
-    socketAddr.sin_addr.s_addr = htonl(INADDR_ANY);//The socket accepts connections to all the IPs
+        socketAddr.sin_addr.s_addr = (this->address == "") ? htonl(INADDR_ANY) : inet_addr(this->address.c_str());//The socket accepts connections to all the IPs
     socketAddr.sin_port = htons(port);//Set port
 }
 

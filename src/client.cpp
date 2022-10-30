@@ -5,8 +5,8 @@
 int main(int argc, char *argv[])
 {
 
-    auto application = Gtk::Application::create(argc, argv);
-    Window window;
+   auto application = Gtk::Application::create(argc, argv);
+   Window window;
 
-    return application->run(window);
+   return application->run(window);
 }
