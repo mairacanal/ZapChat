@@ -30,6 +30,7 @@ void Client::disconnect_client()
 {
     message = ">> " + username + " exited the chat! <<";
     send_message(message);
+    exit(0);
 }
 
 /**
@@ -81,8 +82,7 @@ void Client::run(Window* caller)
         Glib::Threads::Mutex::Lock lock(mutex);
 
         if (recv(socket->get_fd(), message, MAX_MESSAGE_SIZE, 0) <= 0) {
-            disconnect_client();
-            exit(0);
+            break;
         }
 
         this->message = Glib::ustring { message };
