@@ -13,7 +13,6 @@ public:
     Window();
     void notify();
     void server_is_down();
-    void error_login_dialog();
 private:
     // Signal Handler
     void on_send_button_clicked();
@@ -30,6 +29,11 @@ private:
     
     void set_chat_hierarchy();
     void draw_chat_widgets();
+
+    // Error dialog
+    void error_login_dialog();
+    void error_server_dialog();
+    void general_error();
 
     // Member Data
     Gtk::Fixed mainFixed;
