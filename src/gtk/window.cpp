@@ -267,19 +267,17 @@ void Window::update_widgets()
 
     client.get_message(&message_from_client_thread);
 
-    if (message_from_client_thread != lastMessage) {
-        auto buffer = textView.get_buffer();
-        buffer->set_text(buffer->get_text() + message_from_client_thread + "\n");
+    auto buffer = textView.get_buffer();
+    buffer->set_text(buffer->get_text() + message_from_client_thread + "\n");
 
-        lastMessage = message_from_client_thread;
+    lastMessage = message_from_client_thread;
 
-        // Scroll the last inserted line into view
-        auto iter = buffer->end();
-        iter.set_line_offset(0);
-        auto mark = buffer->get_mark("last_line");
-        buffer->move_mark(mark, iter);
-        textView.scroll_to(mark);
-    }
+    // Scroll the last inserted line into view
+    auto iter = buffer->end();
+    iter.set_line_offset(0);
+    auto mark = buffer->get_mark("last_line");
+    buffer->move_mark(mark, iter);
+    textView.scroll_to(mark);
 }
 
 /**

@@ -74,7 +74,6 @@ void Client::run(Window* caller)
     }
 
     connect_client();
-    caller->notify();
 
     // loop principal de comunicação
     while (isRunning) {
