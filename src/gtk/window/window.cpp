@@ -108,7 +108,7 @@ void Window::draw_login_widgets()
  */
 void Window::error_login_dialog()
 {
-    m_pDialog.reset(new Gtk::MessageDialog(*this, "Enter a valid username"));
+    pDialog.reset(new Gtk::MessageDialog(*this, "Enter a valid username"));
     general_error();
 }
 
@@ -118,17 +118,17 @@ void Window::error_login_dialog()
  */
 void Window::error_server_dialog()
 {
-    m_pDialog.reset(new Gtk::MessageDialog(*this, "Waiting for server..."));
+    pDialog.reset(new Gtk::MessageDialog(*this, "Waiting for server..."));
     general_error();
 }
 
 void Window::general_error()
 {
-    m_pDialog->set_modal(true);
-    m_pDialog->signal_response().connect(
+    pDialog->set_modal(true);
+    pDialog->signal_response().connect(
         sigc::hide(sigc::mem_fun(*m_pDialog, &Gtk::Widget::hide)));
 
-    m_pDialog->show();
+    pDialog->show();
 }
 
 /**

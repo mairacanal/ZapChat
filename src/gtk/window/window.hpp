@@ -43,7 +43,7 @@ private:
     Gtk::Button sendButton, loginUserSendButton;
     Gtk::Entry entry, loginUserEntry;
 
-    std::unique_ptr<Gtk::MessageDialog> m_pDialog;
+    std::unique_ptr<Gtk::MessageDialog> pDialog;
 
     Glib::Dispatcher dispatcher;
     Glib::Dispatcher serverDispatcher;

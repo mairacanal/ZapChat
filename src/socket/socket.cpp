@@ -131,7 +131,7 @@ void Socket::close()
  * 
  * @return int value of the file descriptor
  */
-int Socket::getFd()
+int Socket::get_fd()
 {
     return fd;
 }

@@ -33,5 +33,5 @@ public:
     bool accept(int& targetFileDescriptor);
     int connect();
     void close();
-    int getFd();
+    int get_fd();
 };

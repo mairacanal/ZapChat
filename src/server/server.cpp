@@ -18,7 +18,7 @@ Server::Server()
  * @brief When the server is running, add new connections to the vector of connections
  * 
  */
-void Server::threadHandler()
+void Server::thread_handler()
 {
     int fd;
 
@@ -46,7 +46,7 @@ void Server::setup()
  * 
  * @param fd client id
  */
-void Server::clientHandler(int fd)
+void Server::client_handler(int fd)
 {
     send(fd, "Connection succeed", MAX_MESSAGE_SIZE, 0);
     std::cout << "Initializing connection with client " << fd << std::endl;

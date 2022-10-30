@@ -24,9 +24,9 @@ private:
 
     void setup();
 
-    void threadHandler();
+    void thread_handler();
 
-    void clientHandler(int);
+    void client_handler(int);
 
 public:
     Server();
