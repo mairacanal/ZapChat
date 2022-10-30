@@ -5,19 +5,19 @@
  *
  */
 Window::Window()
-    : mainTopBox { Gtk::Orientation::ORIENTATION_VERTICAL }
-    , loginBox { Gtk::Orientation::ORIENTATION_VERTICAL }
-    , mainBottomBox { Gtk::Orientation::ORIENTATION_HORIZONTAL }
-    , dispatcher {}
-    , client {}
-    , clientThread { nullptr }
+    : mainTopBox{Gtk::Orientation::ORIENTATION_VERTICAL}
+    , loginBox{Gtk::Orientation::ORIENTATION_VERTICAL}
+    , mainBottomBox{Gtk::Orientation::ORIENTATION_HORIZONTAL}
+    , dispatcher{}
+    , client{}
+    , clientThread{nullptr}
 {
     set_login_hierarchy();
     draw_login_widgets();
     show_all_children();
 
     serverDispatcher.connect(
-        sigc::mem_fun(*this, &Window::error_login_dialog));
+        sigc::mem_fun(*this, &Window::error_server_dialog));
 }
 
 /**
@@ -79,17 +79,21 @@ void Window::draw_login_widgets()
 
     // Function that runs when the user clicks the `send` button
     loginUserSendButton.signal_button_release_event().connect(
-        [&](GdkEventButton*) {
+        [&](GdkEventButton *)
+        {
             // Get buffer content
             auto buffer = loginUserEntry.get_buffer();
             Glib::ustring username = buffer->get_text();
 
             // Username verification
-            if (username != "") {
+            if (username != "")
+            {
                 // Ok
                 client.set_username(username);
                 this->complete_login();
-            } else {
+            }
+            else
+            {
                 // Error
                 error_login_dialog();
                 loginUserEntry.error_bell();
@@ -97,6 +101,7 @@ void Window::draw_login_widgets()
             return true;
         });
 }
+
 /**
  * @brief Creates and shows an error message dialog when the
  * user enters an invalid username.
@@ -104,6 +109,21 @@ void Window::draw_login_widgets()
 void Window::error_login_dialog()
 {
     m_pDialog.reset(new Gtk::MessageDialog(*this, "Enter a valid username"));
+    general_error();
+}
+
+/**
+ * @brief Creates and shows an error message dialog when the
+ * user enters an invalid username.
+ */
+void Window::error_server_dialog()
+{
+    m_pDialog.reset(new Gtk::MessageDialog(*this, "Server is down!"));
+    general_error();
+}
+
+void Window::general_error()
+{
     m_pDialog->set_modal(true);
     m_pDialog->signal_response().connect(
         sigc::hide(sigc::mem_fun(*m_pDialog, &Gtk::Widget::hide)));
@@ -129,11 +149,8 @@ void Window::complete_login()
     dispatcher.connect(
         sigc::mem_fun(*this, &Window::on_notification_from_client_thread));
 
-        
-
     clientThread = Glib::Threads::Thread::create(
         sigc::bind(sigc::mem_fun(client, &Client::run), this));
-
 
     show_all_children();
 }
@@ -248,11 +265,12 @@ void Window::draw_chat_widgets()
  */
 void Window::update_widgets()
 {
-    Glib::ustring message_from_client_thread {};
+    Glib::ustring message_from_client_thread{};
 
     client.get_message(&message_from_client_thread);
 
-    if (message_from_client_thread != lastMessage) {
+    if (message_from_client_thread != lastMessage)
+    {
         auto buffer = textView.get_buffer();
         buffer->set_text(buffer->get_text() + message_from_client_thread + "\n");
 
@@ -274,7 +292,8 @@ void Window::notify()
 
 void Window::on_notification_from_client_thread()
 {
-    if (clientThread && client.has_stopped()) {
+    if (clientThread && client.has_stopped())
+    {
         clientThread->join();
         clientThread = nullptr;
     }
@@ -283,13 +302,13 @@ void Window::on_notification_from_client_thread()
 
 void Window::on_send_button_clicked()
 {
-    const Glib::ustring message = client.get_username() + ": "+ entry.get_text();
+    const Glib::ustring message = client.get_username() + ": " + entry.get_text();
 
     client.send_message(message);
     entry.set_text("");
 }
 
-
-void Window::server_is_down(){
+void Window::server_is_down()
+{
     serverDispatcher.emit();
 }
