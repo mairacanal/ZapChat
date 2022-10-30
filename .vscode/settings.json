@@ -23,7 +23,7 @@
         "cstdlib": "cpp",
         "cstring": "cpp",
         "ctime": "cpp",
-        "cwchar": "cpp",
+        "cw std::string": "cpp",
         "cwctype": "cpp",
         "deque": "cpp",
         "list": "cpp",
