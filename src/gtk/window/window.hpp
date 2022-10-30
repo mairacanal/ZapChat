@@ -18,6 +18,7 @@ private:
     void on_send_button_clicked();
     void update_widgets();
     void complete_login();
+    bool kill_window(GdkEventAny *event);
 
     // Dispatcher Handler
     void on_notification_from_client_thread();
@@ -25,7 +26,6 @@ private:
     void set_login_hierarchy();
     void draw_login_widgets();
     void clear_login_widgets();
-
     
     void set_chat_hierarchy();
     void draw_chat_widgets();

@@ -31,8 +31,6 @@ private:
 
     void connect_client();
 
-    void disconnect_client();
-
 public:
     Client();
 
@@ -45,6 +43,7 @@ public:
     void set_username(Glib::ustring user);
     Glib::ustring get_username() const;
 
+    void disconnect_client();
     bool has_stopped() const;
 
     ~Client();

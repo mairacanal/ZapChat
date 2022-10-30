@@ -5,12 +5,12 @@
  *
  */
 Window::Window()
-    : mainTopBox{Gtk::Orientation::ORIENTATION_VERTICAL}
-    , loginBox{Gtk::Orientation::ORIENTATION_VERTICAL}
-    , mainBottomBox{Gtk::Orientation::ORIENTATION_HORIZONTAL}
-    , dispatcher{}
-    , client{}
-    , clientThread{nullptr}
+    : mainTopBox { Gtk::Orientation::ORIENTATION_VERTICAL }
+    , loginBox { Gtk::Orientation::ORIENTATION_VERTICAL }
+    , mainBottomBox { Gtk::Orientation::ORIENTATION_HORIZONTAL }
+    , dispatcher {}
+    , client {}
+    , clientThread { nullptr }
 {
     set_login_hierarchy();
     draw_login_widgets();
@@ -79,21 +79,17 @@ void Window::draw_login_widgets()
 
     // Function that runs when the user clicks the `send` button
     loginUserSendButton.signal_button_release_event().connect(
-        [&](GdkEventButton *)
-        {
+        [&](GdkEventButton*) {
             // Get buffer content
             auto buffer = loginUserEntry.get_buffer();
             Glib::ustring username = buffer->get_text();
 
             // Username verification
-            if (username != "")
-            {
+            if (username != "") {
                 // Ok
                 client.set_username(username);
                 this->complete_login();
-            }
-            else
-            {
+            } else {
                 // Error
                 error_login_dialog();
                 loginUserEntry.error_bell();
@@ -148,6 +144,8 @@ void Window::complete_login()
 
     dispatcher.connect(
         sigc::mem_fun(*this, &Window::on_notification_from_client_thread));
+
+    signal_delete_event().connect(sigc::mem_fun(this, &Window::kill_window));
 
     clientThread = Glib::Threads::Thread::create(
         sigc::bind(sigc::mem_fun(client, &Client::run), this));
@@ -265,12 +263,11 @@ void Window::draw_chat_widgets()
  */
 void Window::update_widgets()
 {
-    Glib::ustring message_from_client_thread{};
+    Glib::ustring message_from_client_thread {};
 
     client.get_message(&message_from_client_thread);
 
-    if (message_from_client_thread != lastMessage)
-    {
+    if (message_from_client_thread != lastMessage) {
         auto buffer = textView.get_buffer();
         buffer->set_text(buffer->get_text() + message_from_client_thread + "\n");
 
@@ -287,7 +284,7 @@ void Window::update_widgets()
 
 /**
  * @brief Public function to emit a new message recieved or sent
- * 
+ *
  */
 void Window::notify()
 {
@@ -296,12 +293,11 @@ void Window::notify()
 
 /**
  * @brief Got a message from the server.
- * 
+ *
  */
 void Window::on_notification_from_client_thread()
 {
-    if (clientThread && client.has_stopped())
-    {
+    if (clientThread && client.has_stopped()) {
         clientThread->join();
         clientThread = nullptr;
     }
@@ -310,13 +306,13 @@ void Window::on_notification_from_client_thread()
 
 /**
  * @brief Sends a message (if exists) to the server.
- * 
+ *
  */
 void Window::on_send_button_clicked()
 {
     const Glib::ustring message = client.get_username() + ": " + entry.get_text();
 
-    if(entry.get_text() != "") {
+    if (entry.get_text() != "") {
         client.send_message(message);
         entry.set_text("");
     }
@@ -324,9 +320,17 @@ void Window::on_send_button_clicked()
 
 /**
  * @brief Public function to emit if server is down
- * 
+ *
  */
 void Window::server_is_down()
 {
     serverDispatcher.emit();
+}
+
+bool Window::kill_window(GdkEventAny *event)
+{
+    client.disconnect_client();
+    Gtk::Main::quit();
+
+    return false;
 }

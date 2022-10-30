@@ -82,7 +82,6 @@ void Client::run(Window* caller)
 
         if (recv(socket->getFd(), message, MAX_MESSAGE_SIZE, 0) <= 0) {
             disconnect_client();
-            delete socket;
             exit(0);
         }
 
@@ -92,6 +91,7 @@ void Client::run(Window* caller)
         caller->notify();
     }
 
+    disconnect_client();
     isRunning = false;
 }
 
