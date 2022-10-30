@@ -27,7 +27,7 @@ public:
     void bind();
     void listen();
     bool accept(int& targetFileDescriptor);
-    void connect();
+    int connect();
     void close();
     int getFd();
 };

@@ -18,6 +18,9 @@ Window::Window()
     draw_login_widgets();
 
     show_all_children();
+
+    serverDispatcher.connect(
+        sigc::mem_fun(*this, &Window::error_login_dialog));
 }
 
 /**
@@ -128,6 +131,8 @@ void Window::complete_login()
 
     dispatcher.connect(
         sigc::mem_fun(*this, &Window::on_notification_from_client_thread));
+
+        
 
     clientThread = Glib::Threads::Thread::create(
         sigc::bind(sigc::mem_fun(client, &Client::run), this));
@@ -283,4 +288,9 @@ void Window::on_send_button_clicked()
 {
     client.send_message(entry.get_text());
     entry.set_text("");
+}
+
+
+void Window::server_is_down(){
+    serverDispatcher.emit();
 }

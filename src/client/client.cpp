@@ -29,7 +29,16 @@ Client::~Client()
 }
 
 void Client::run(Window* caller)
-{
+{   
+
+    if(socket->connect() == -1){
+        caller->server_is_down();
+        while(socket->connect() == -1){
+
+        }
+    }
+
+    std::cout << socket->connect();
     char initialMessage[MAX_MESSAGE_SIZE];
 
     {
@@ -38,8 +47,8 @@ void Client::run(Window* caller)
         this->message = "";
     }
 
-    socket->connect();
-
+    
+    
     // lê a mensagem inicial do servidor
     read(socket->getFd(), initialMessage, sizeof(initialMessage));
 

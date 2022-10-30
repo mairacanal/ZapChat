@@ -11,13 +11,12 @@ class Window : public Gtk::Window {
 
 public:
     Window();
-
     void notify();
-
+    void server_is_down();
+    void error_login_dialog();
 private:
     // Signal Handler
     void on_send_button_clicked();
-
     void update_widgets();
     void complete_login();
 
@@ -27,7 +26,7 @@ private:
     void set_login_hierarchy();
     void draw_login_widgets();
     void clear_login_widgets();
-    void error_login_dialog();
+
     
     void set_chat_hierarchy();
     void draw_chat_widgets();
@@ -43,6 +42,7 @@ private:
     std::unique_ptr<Gtk::MessageDialog> m_pDialog;
 
     Glib::Dispatcher dispatcher;
+    Glib::Dispatcher serverDispatcher;
     Client client;
     Glib::Threads::Thread* clientThread;
 

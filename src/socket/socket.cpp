@@ -55,10 +55,17 @@ bool Socket::accept(int& targetFileDescriptor)
 }
 
 //Estabilish connection
-void Socket::connect()
-{
-    if (::connect(fd, (struct sockaddr*)&socketAddr, sizeof(socketAddr)) == -1)
-        throw std::runtime_error("Connection's Error");
+int Socket::connect()
+{   
+    try{
+        if (::connect(fd, (struct sockaddr*)&socketAddr, sizeof(socketAddr)) == -1){
+                throw std::runtime_error("Connection's Error");
+            }
+        }
+    catch(std::runtime_error error){
+        return -1;
+    }
+    return 0;
 }
 
 //Verify both send and receive processs and shutdown the socket
