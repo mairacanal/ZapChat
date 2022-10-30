@@ -1,93 +1,98 @@
 #include "client.hpp"
-#include "../socket/socket.hpp"
-
-// Static class variables
-Client* Client::instance { nullptr };
-std::mutex Client::mutex;
-
-// Instantiating the client
-Client* Client::GetInstance(int port, int maxMessageSize, std::string user)
-{
-    std::lock_guard<std::mutex> lock(mutex);
-    //Create the instance of client and return it
-    if (instance == nullptr)
-        instance = new Client(port, maxMessageSize, user);
-
-    return instance;
-}
-
-Client* Client::GetInstance()
-{
-    std::lock_guard<std::mutex> lock(mutex);
-    if (instance == nullptr) {
-        throw std::runtime_error("The Client has not been initialized");
-    }
-    return instance;
-}
+#include "../gtk/window/window.hpp"
 
 // Client constructor class
 Client::Client(int port, int maxMessageSize, std::string user)
     : maxMessageSize { maxMessageSize }
     , port { port }
     , user { user }
+    , message {}
+    , mutex {}
 {
-    ClientSocket = new Socket(port);
-};
-
-// Main execution system
-void Client::Run()
-{
-    isRunning = true;
-    ClientSocket->connect();
-    char initialMessage[maxMessageSize];
-
-    // Read the initial message from the server
-    read(ClientSocket->getFd(), initialMessage, sizeof(initialMessage));
-    Connect(initialMessage);
-
-    // Main communication loop
-    while (isRunning) {
-
-        char message[maxMessageSize];//While is running, recive the message of the socket
-        if (recv(ClientSocket->getFd(), message, sizeof(message), 0) <= 0) {
-            raise(SIGTERM);
-            break;
-        }
-        Receive(message);// Redirect the message for using as API with gtk
-    }
-
-    isRunning = false;
+    socket = new Socket(port);
 }
 
-// Established connection with server
+/* Client* Client::GetInstance(int port, int maxMessageSize, std::string address, std::string user) */
+/* { */
+/*     if (instance == nullptr) */
+/*         instance = new Client(port, maxMessageSize, address, user); */
+
+/*     return instance; */
+/* } */
+
+/* Client* Client::GetInstance() */
+/* { */
+/*     if (instance == nullptr) { */
+/*         throw std::runtime_error("O comunicador ainda não foi inicializado"); */
+/*     } */
+/*     return instance; */
+/* } */
+
 void Client::Connect(char* message)
 {
-    std::string conected = user + " joined the chat!";
-    conected.resize(maxMessageSize);// Setup the message for the maxsize
+    std::string connected = user + " joined the chat!";
+    connected.resize(maxMessageSize); // Setup the message for the maxsize
 }
 
-// Message received by client
-void Client::Receive(char* message)
-{
-    printf("%s\n", message);
-}
-
-// Disconnecting from server
 void Client::Disconnect()
 {
-    std::string discMsg = "Bye!";
-    send(ClientSocket->getFd(), discMsg.data(), discMsg.size(), 0);
+    std::string discMsg = "Tchauzinho";
+    send(socket->getFd(), discMsg.data(), discMsg.size(), 0);
 }
 
-// Client message sending
-void Client::SendMessage(std::string message)
+void Client::send_message(Glib::ustring message) const
 {
     message.resize(maxMessageSize);
-    send(ClientSocket->getFd(), (const void*)message.c_str(), message.size(), 0);
+    send(socket->getFd(), (const void*)message.c_str(), message.size(), 0);
 }
 
 // Destroy Client
 Client::~Client()
 {
-    delete ClientSocket;
+    delete socket;
+}
+
+void Client::run(Window* caller)
+{
+    {
+        Glib::Threads::Mutex::Lock lock(mutex);
+        isRunning = true;
+        this->message = "";
+    }
+
+    socket->connect();
+    char initialMessage[maxMessageSize];
+
+    // lê a mensagem inicial do servidor
+    read(socket->getFd(), initialMessage, sizeof(initialMessage));
+    Connect(initialMessage);
+
+    // loop principal de comunicação
+    while (isRunning) {
+        char message[maxMessageSize];
+        Glib::Threads::Mutex::Lock lock(mutex);
+
+        if (recv(socket->getFd(), message, maxMessageSize, 0) <= 0) {
+            raise(SIGTERM);
+            break;
+        }
+
+        this->message = std::string { message };
+
+        lock.release();
+        caller->notify();
+    }
+
+    isRunning = false;
+}
+
+void Client::get_message(Glib::ustring* message) const
+{
+    if (message)
+        *message = this->message;
+}
+
+bool Client::has_stopped() const
+{
+    return !isRunning;
 }

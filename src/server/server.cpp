@@ -35,7 +35,7 @@ void Server::setup()
 void Server::clientHandler(int fd)
 {
     send(fd, "Connection succeed", MAX_MESSAGE_SIZE, 0);
-    std::cout << "Initializing connection with client" << fd << std::endl;
+    std::cout << "Initializing connection with client " << fd << std::endl;
 
     int receivedBytes;
 

@@ -3,21 +3,35 @@
 
 /**
  * @brief Constructor for window class
- * 
+ *
  */
 Window::Window()
-    : mainTopBox{Gtk::Orientation::ORIENTATION_VERTICAL}
-    , loginBox{Gtk::Orientation::ORIENTATION_VERTICAL}
-    , mainBottomBox{Gtk::Orientation::ORIENTATION_HORIZONTAL}
+    : mainTopBox { Gtk::Orientation::ORIENTATION_VERTICAL }
+    , loginBox { Gtk::Orientation::ORIENTATION_VERTICAL }
+    , mainBottomBox { Gtk::Orientation::ORIENTATION_HORIZONTAL }
+    , dispatcher {}
+    , client { 4040, 256, "user1" }
+    , clientThread { nullptr }
 {
     set_login_hierarchy();
+
     draw_login_widgets();
+
+    sendButton.signal_clicked().connect(
+        sigc::mem_fun(*this, &Window::on_send_button_clicked));
+
+    dispatcher.connect(
+        sigc::mem_fun(*this, &Window::on_notification_from_client_thread));
+
+    clientThread = Glib::Threads::Thread::create(
+        sigc::bind(sigc::mem_fun(client, &Client::run), this));
+
     show_all_children();
 }
 
 /**
  * @brief Creates the widgets hierarchy for the login screen
- * 
+ *
  */
 void Window::set_login_hierarchy()
 {
@@ -35,7 +49,7 @@ void Window::set_login_hierarchy()
 
 /**
  * @brief Draws each widget, sets size and specific details
- * 
+ *
  */
 void Window::draw_login_widgets()
 {
@@ -74,21 +88,17 @@ void Window::draw_login_widgets()
 
     // Function that runs when the user clicks the `send` button
     loginUserSendButton.signal_button_release_event().connect(
-        [&](GdkEventButton *)
-        {
+        [&](GdkEventButton*) {
             // Get buffer content
             auto buffer = loginUserEntry.get_buffer();
             Glib::ustring username = buffer->get_text();
 
             // Username verification
-            if (username != "")
-            {
+            if (username != "") {
                 // Ok
                 std::cout << username << '\n';
                 this->complete_login();
-            }
-            else
-            {
+            } else {
                 // Error
                 error_login_dialog();
                 loginUserEntry.error_bell();
@@ -112,7 +122,7 @@ void Window::error_login_dialog()
 
 /**
  * @brief When user enters a valid username the screen is redrawn
- * 
+ *
  */
 void Window::complete_login()
 {
@@ -121,13 +131,13 @@ void Window::complete_login()
 
     set_chat_hierarchy();
     draw_chat_widgets();
-    
+
     show_all_children();
 }
 
 /**
  * @brief Clears all the login widgets that were being used.
- * 
+ *
  */
 void Window::clear_login_widgets()
 {
@@ -139,7 +149,7 @@ void Window::clear_login_widgets()
 
 /**
  * @brief Setup the chat screen's widgets hierarchy
- * 
+ *
  */
 void Window::set_chat_hierarchy()
 {
@@ -164,15 +174,11 @@ void Window::set_chat_hierarchy()
     scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
     scrolledWindow.set_hexpand(true);
     scrolledWindow.set_vexpand(true);
-
-    // Create a text buffer mark for use in update_widgets().
-    auto buffer = textView.get_buffer();
-    buffer->create_mark("last_line", buffer->end(), /* left_gravity= */ true);
 }
 
 /**
  * @brief Draws the chat screen's widgets
- * 
+ *
  */
 void Window::draw_chat_widgets()
 {
@@ -217,14 +223,6 @@ void Window::draw_chat_widgets()
     sendButton.set_can_focus(true);
     sendButton.set_focus_on_click(true);
 
-    // Functions that runs when user clicks the `send` button
-    sendButton.signal_button_release_event().connect(
-        [&](GdkEventButton *)
-        {
-            this->update_widgets();
-            return true;
-        });
-
     // Text View
     textView.set_right_margin(0);
     textView.set_bottom_margin(0);
@@ -233,20 +231,55 @@ void Window::draw_chat_widgets()
     textView.set_pixels_below_lines(2);
     textView.set_pixels_inside_wrap(2);
     textView.set_wrap_mode(Gtk::WrapMode::WRAP_WORD_CHAR);
+    //
+    // Create a text buffer mark for use in update_widgets().
+    auto buffer = textView.get_buffer();
+    buffer->create_mark("last_line", buffer->end(), /* left_gravity= */ true);
+
+    show_all_children();
 }
 
 /**
  * @brief Update the textview widget to recive messages
- * 
+ *
  */
 void Window::update_widgets()
 {
-    auto buffer = textView.get_buffer();
-    buffer->set_text(buffer->get_text() + "MENSAGEM MUITO GRANDE QUE ESTA SENDO RECEBIDA PELA JANELA FEITA COM O GTK3 E CPP\n");
+    Glib::ustring message_from_client_thread {};
 
-    auto iter = buffer->end();
-    iter.set_line_offset(0);
-    auto mark = buffer->get_mark("last_line");
-    buffer->move_mark(mark, iter);
-    textView.scroll_to(mark);
+    client.get_message(&message_from_client_thread);
+
+    if (message_from_client_thread != lastMessage) {
+        auto buffer = textView.get_buffer();
+        buffer->set_text(buffer->get_text() + message_from_client_thread + "\n");
+
+        lastMessage = message_from_client_thread;
+
+        // Scroll the last inserted line into view
+        auto iter = buffer->end();
+        iter.set_line_offset(0);
+        auto mark = buffer->get_mark("last_line");
+        buffer->move_mark(mark, iter);
+        textView.scroll_to(mark);
+    }
+}
+
+void Window::notify()
+{
+    dispatcher.emit();
+}
+
+void Window::on_notification_from_client_thread()
+{
+    if (clientThread && client.has_stopped()) {
+        clientThread->join();
+        clientThread = nullptr;
+    }
+    update_widgets();
+}
+
+void Window::on_send_button_clicked()
+{
+    client.send_message(entry.get_text());
+    entry.set_text("");
 }

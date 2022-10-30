@@ -1,30 +1,44 @@
 #pragma once
 
 #include <csignal>
-#include <mutex>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+
+#include "gtkmm.h"
 
 #include "../socket/socket.hpp"
 
+class Window;
+
 class Client {
 private:
+    // Synchronizes access to member data
+    mutable Glib::Threads::Mutex mutex;
+
+    // Data used by both GUI thread and client thread
+    Glib::ustring message;
+
     int port;
     bool isRunning;
     std::string user;
-    Socket* ClientSocket;
-    static Client* instance;
-    static std::mutex mutex;
+    Socket* socket;
+    /* static Client* instance; */
 
 public:
     int maxMessageSize;
+
     Client(int port, int maxMessageSize, std::string user);
-    void Receive(char* message);
+
     void Connect(char* message);
-    static Client* GetInstance();
-    static Client* GetInstance(int port, int maxMessageSize, std::string user);
+    /* static Client* GetInstance(); */
+    /* static Client* GetInstance(int port, int maxMessageSize, std::string address, std::string user); */
     void Disconnect();
-    void SendMessage(std::string message);
-    void Run();
+
+    // Thread function
+    void run(Window* caller);
+    void send_message(Glib::ustring message) const;
+    void get_message(Glib::ustring* message) const;
+    bool has_stopped() const;
+
     ~Client();
 };

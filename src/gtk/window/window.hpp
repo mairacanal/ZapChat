@@ -1,14 +1,7 @@
 #pragma once
 
-#include <gtkmm/application.h>
-#include <gtkmm/box.h>
-#include <gtkmm/button.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/fixed.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/textview.h>
-#include <gtkmm/window.h>
-#include <gtkmm/messagedialog.h>
+#include <gtkmm.h>
+#include "../../client/client.hpp"
 
 /**
  * @brief Main window class, it is the graphical interface for the user to use.
@@ -18,9 +11,19 @@ class Window : public Gtk::Window {
 
 public:
     Window();
-    virtual ~Window() = default;
+
+    void notify();
 
 private:
+    // Signal Handler
+    void on_send_button_clicked();
+
+    void update_widgets();
+    void complete_login();
+
+    // Dispatcher Handler
+    void on_notification_from_client_thread();
+
     void set_login_hierarchy();
     void draw_login_widgets();
     void clear_login_widgets();
@@ -29,9 +32,7 @@ private:
     void set_chat_hierarchy();
     void draw_chat_widgets();
 
-    void update_widgets();
-    void complete_login();
-
+    // Member Data
     Gtk::Fixed mainFixed;
     Gtk::Box mainTopBox, mainBottomBox, loginBox;
     Gtk::ScrolledWindow scrolledWindow;
@@ -40,4 +41,10 @@ private:
     Gtk::Entry entry, loginUserEntry;
 
     std::unique_ptr<Gtk::MessageDialog> m_pDialog;
+
+    Glib::Dispatcher dispatcher;
+    Client client;
+    Glib::Threads::Thread* clientThread;
+
+    Glib::ustring lastMessage;
 };
