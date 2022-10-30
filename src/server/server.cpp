@@ -63,7 +63,6 @@ void Server::clientHandler(int fd)
 
         std::cout << "From client " << fd << ": " << message << std::endl;
 
-
         //For every client connected, foward the message
         for (auto client : connections) {
             send(client, message, MAX_MESSAGE_SIZE, 0);
@@ -106,4 +105,6 @@ void Server::run()
     //While the server is running, handle the connections and send/receive process 
     while (isRunning)
         threadHandler();
+
+    isRunning = false;
 }

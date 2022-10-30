@@ -3,19 +3,18 @@
 
 /**
  * @brief Construct a new Client:: Client object
- * 
+ *
  */
 Client::Client()
-    : username { }
+    : username {}
     , message {}
     , mutex {}
 {
-    socket = new Socket(PORT);
 }
 
 /**
  * @brief Sends a message when a user connects into the server
- * 
+ *
  */
 void Client::connect_client()
 {
@@ -25,7 +24,7 @@ void Client::connect_client()
 
 /**
  * @brief Sends a message when a user disconnects the server
- * 
+ *
  */
 void Client::disconnect_client()
 {
@@ -35,7 +34,7 @@ void Client::disconnect_client()
 
 /**
  * @brief Destroy the Client:: Client object
- * 
+ *
  */
 Client::~Client()
 {
@@ -44,20 +43,11 @@ Client::~Client()
 
 /**
  * @brief Starts the client, connects it to the server
- * 
+ *
  * @param caller Window reference to use the dispatchers
  */
 void Client::run(Window* caller)
-{   
-
-    if(socket->connect() == -1){
-        caller->server_is_down();
-        while(socket->connect() == -1){
-
-        }
-    }
-
-    std::cout << socket->connect();
+{
     char initialMessage[MAX_MESSAGE_SIZE];
 
     {
@@ -66,8 +56,14 @@ void Client::run(Window* caller)
         this->message = "";
     }
 
-    
-    
+    socket = new Socket(PORT);
+
+    if (socket->connect() == -1) {
+        caller->server_is_down();
+        while (socket->connect() == -1)
+            ;
+    }
+
     // lê a mensagem inicial do servidor
     read(socket->getFd(), initialMessage, sizeof(initialMessage));
 
@@ -85,8 +81,9 @@ void Client::run(Window* caller)
         Glib::Threads::Mutex::Lock lock(mutex);
 
         if (recv(socket->getFd(), message, MAX_MESSAGE_SIZE, 0) <= 0) {
-            raise(SIGTERM);
-            break;
+            disconnect_client();
+            delete socket;
+            exit(0);
         }
 
         this->message = Glib::ustring { message };
@@ -100,7 +97,7 @@ void Client::run(Window* caller)
 
 /**
  * @brief Sends a message to the socket
- * 
+ *
  * @param message String of the message that the user has typed
  */
 void Client::send_message(Glib::ustring message) const
@@ -112,7 +109,7 @@ void Client::send_message(Glib::ustring message) const
 
 /**
  * @brief Recive a message from the server
- * 
+ *
  * @param message String of the message
  */
 void Client::get_message(Glib::ustring* message) const
@@ -123,7 +120,7 @@ void Client::get_message(Glib::ustring* message) const
 
 /**
  * @brief Sets the user's name.
- * 
+ *
  * @param user String of the user's name.
  */
 void Client::set_username(Glib::ustring user)
@@ -133,7 +130,7 @@ void Client::set_username(Glib::ustring user)
 
 /**
  * @brief Retrives the username
- * 
+ *
  * @return Glib::ustring username.
  */
 Glib::ustring Client::get_username() const
@@ -143,9 +140,9 @@ Glib::ustring Client::get_username() const
 
 /**
  * @brief Check if the server is still running
- * 
- * @return true if the server IS NOT running 
- * @return false if the server IS running 
+ *
+ * @return true if the server IS NOT running
+ * @return false if the server IS running
  */
 bool Client::has_stopped() const
 {
