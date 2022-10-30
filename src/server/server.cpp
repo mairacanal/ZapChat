@@ -27,7 +27,7 @@ void Server::thread_handler()
     }
 
     connections.push_back(fd);
-    std::thread clientThread(&Server::clientHandler, this, fd);
+    std::thread clientThread(&Server::client_handler, this, fd);
     clientThread.detach();
 }
 
@@ -104,7 +104,7 @@ void Server::run()
 
     //While the server is running, handle the connections and send/receive process 
     while (isRunning)
-        threadHandler();
+        thread_handler();
 
     isRunning = false;
 }

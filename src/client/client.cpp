@@ -65,7 +65,7 @@ void Client::run(Window* caller)
     }
 
     // lê a mensagem inicial do servidor
-    read(socket->getFd(), initialMessage, sizeof(initialMessage));
+    read(socket->get_fd(), initialMessage, sizeof(initialMessage));
 
     if (std::strcmp(initialMessage, "Connection succeed")) {
         isRunning = false;
@@ -80,7 +80,7 @@ void Client::run(Window* caller)
         char message[MAX_MESSAGE_SIZE];
         Glib::Threads::Mutex::Lock lock(mutex);
 
-        if (recv(socket->getFd(), message, MAX_MESSAGE_SIZE, 0) <= 0) {
+        if (recv(socket->get_fd(), message, MAX_MESSAGE_SIZE, 0) <= 0) {
             disconnect_client();
             exit(0);
         }
@@ -103,7 +103,7 @@ void Client::run(Window* caller)
 void Client::send_message(Glib::ustring message) const
 {
     message.resize(MAX_MESSAGE_SIZE);
-    send(socket->getFd(), (const void*)message.c_str(), message.size(), 0);
+    send(socket->get_fd(), (const void*)message.c_str(), message.size(), 0);
     message.empty();
 }
 

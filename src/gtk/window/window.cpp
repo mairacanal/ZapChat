@@ -122,7 +122,7 @@ void Window::general_error()
 {
     pDialog->set_modal(true);
     pDialog->signal_response().connect(
-        sigc::hide(sigc::mem_fun(*m_pDialog, &Gtk::Widget::hide)));
+        sigc::hide(sigc::mem_fun(*pDialog, &Gtk::Widget::hide)));
 
     pDialog->show();
 }
