@@ -2,32 +2,24 @@
 #include "../gtk/window/window.hpp"
 
 // Client constructor class
-Client::Client(int port, int maxMessageSize, std::string user)
-    : maxMessageSize { maxMessageSize }
-    , port { port }
-    , user { user }
+Client::Client()
+    : username { }
     , message {}
     , mutex {}
 {
-    socket = new Socket(port);
+    socket = new Socket(PORT);
 }
 
-void Client::Connect(char* message)
+void Client::connect_client()
 {
-    std::string connected = user + " joined the chat!";
-    connected.resize(maxMessageSize); // Setup the message for the maxsize
+    Glib::ustring connected = ">>" + username + " joined the chat! <<";
+    send_message(connected);
 }
 
-void Client::Disconnect()
+void Client::disconnect_client()
 {
-    std::string discMsg = "Tchauzinho";
-    send(socket->getFd(), discMsg.data(), discMsg.size(), 0);
-}
-
-void Client::send_message(Glib::ustring message) const
-{
-    message.resize(maxMessageSize);
-    send(socket->getFd(), (const void*)message.c_str(), message.size(), 0);
+    Glib::ustring disconnected = ">>" + username + " exited the chat! <<";
+    send_message(disconnected);
 }
 
 // Destroy Client
@@ -38,6 +30,8 @@ Client::~Client()
 
 void Client::run(Window* caller)
 {
+    char initialMessage[MAX_MESSAGE_SIZE];
+
     {
         Glib::Threads::Mutex::Lock lock(mutex);
         isRunning = true;
@@ -45,18 +39,23 @@ void Client::run(Window* caller)
     }
 
     socket->connect();
-    char initialMessage[maxMessageSize];
 
     // lê a mensagem inicial do servidor
     read(socket->getFd(), initialMessage, sizeof(initialMessage));
-    Connect(initialMessage);
+
+    if (std::strcmp(initialMessage, "Connection succeed")) {
+        isRunning = false;
+        return;
+    }
+
+    connect_client();
 
     // loop principal de comunicação
     while (isRunning) {
-        char message[maxMessageSize];
+        char message[MAX_MESSAGE_SIZE];
         Glib::Threads::Mutex::Lock lock(mutex);
 
-        if (recv(socket->getFd(), message, maxMessageSize, 0) <= 0) {
+        if (recv(socket->getFd(), message, MAX_MESSAGE_SIZE, 0) <= 0) {
             raise(SIGTERM);
             break;
         }
@@ -70,10 +69,21 @@ void Client::run(Window* caller)
     isRunning = false;
 }
 
+void Client::send_message(Glib::ustring message) const
+{
+    message.resize(MAX_MESSAGE_SIZE);
+    send(socket->getFd(), (const void*)message.c_str(), message.size(), 0);
+}
+
 void Client::get_message(Glib::ustring* message) const
 {
     if (message)
         *message = this->message;
+}
+
+void Client::set_username(Glib::ustring user)
+{
+    username = user;
 }
 
 bool Client::has_stopped() const

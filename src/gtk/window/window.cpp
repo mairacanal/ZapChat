@@ -10,21 +10,12 @@ Window::Window()
     , loginBox { Gtk::Orientation::ORIENTATION_VERTICAL }
     , mainBottomBox { Gtk::Orientation::ORIENTATION_HORIZONTAL }
     , dispatcher {}
-    , client { 4040, 256, "user1" }
+    , client {}
     , clientThread { nullptr }
 {
     set_login_hierarchy();
 
     draw_login_widgets();
-
-    sendButton.signal_clicked().connect(
-        sigc::mem_fun(*this, &Window::on_send_button_clicked));
-
-    dispatcher.connect(
-        sigc::mem_fun(*this, &Window::on_notification_from_client_thread));
-
-    clientThread = Glib::Threads::Thread::create(
-        sigc::bind(sigc::mem_fun(client, &Client::run), this));
 
     show_all_children();
 }
@@ -96,7 +87,7 @@ void Window::draw_login_widgets()
             // Username verification
             if (username != "") {
                 // Ok
-                std::cout << username << '\n';
+                client.set_username(username);
                 this->complete_login();
             } else {
                 // Error
@@ -131,6 +122,16 @@ void Window::complete_login()
 
     set_chat_hierarchy();
     draw_chat_widgets();
+
+    sendButton.signal_clicked().connect(
+        sigc::mem_fun(*this, &Window::on_send_button_clicked));
+
+    dispatcher.connect(
+        sigc::mem_fun(*this, &Window::on_notification_from_client_thread));
+
+    clientThread = Glib::Threads::Thread::create(
+        sigc::bind(sigc::mem_fun(client, &Client::run), this));
+
 
     show_all_children();
 }
