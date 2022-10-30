@@ -1,6 +1,6 @@
 #include "socket.hpp"
 
-Socket::Socket(std::string address, unsigned int port)
+Socket::Socket(unsigned int port)
 {
     fd = socket(PF_INET, SOCK_STREAM, getprotobyname("tcp")->p_proto);
 

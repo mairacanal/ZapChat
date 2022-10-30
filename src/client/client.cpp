@@ -4,11 +4,11 @@
 Client* Client::instance { nullptr };
 std::mutex Client::mutex;
 
-Client* Client::GetInstance(int port, int maxMessageSize, std::string address, std::string user)
+Client* Client::GetInstance(int port, int maxMessageSize, std::string user)
 {
     std::lock_guard<std::mutex> lock(mutex);
     if (instance == nullptr)
-        instance = new Client(port, maxMessageSize, address, user);
+        instance = new Client(port, maxMessageSize, user);
 
     return instance;
 }
@@ -17,18 +17,17 @@ Client* Client::GetInstance()
 {
     std::lock_guard<std::mutex> lock(mutex);
     if (instance == nullptr) {
-        throw std::runtime_error("O comunicador ainda não foi inicializado");
+        throw std::runtime_error("The Client has not been initialized");
     }
     return instance;
 }
 
-Client::Client(int port, int maxMessageSize, std::string address, std::string user)
+Client::Client(int port, int maxMessageSize, std::string user)
     : maxMessageSize { maxMessageSize }
     , port { port }
-    , address { address }
     , user { user }
 {
-    ClientSocket = new Socket(address, port);
+    ClientSocket = new Socket(port);
 };
 
 void Client::Run()
@@ -57,7 +56,7 @@ void Client::Run()
 
 void Client::Connect(char* message)
 {
-    std::string conected = user + " entrou no chat!";
+    std::string conected = user + " joined the chat!";
     conected.resize(maxMessageSize);
 }
 
@@ -68,7 +67,7 @@ void Client::Receive(char* message)
 
 void Client::Disconnect()
 {
-    std::string discMsg = "Tchauzinho";
+    std::string discMsg = "Bye!";
     send(ClientSocket->getFd(), discMsg.data(), discMsg.size(), 0);
 }
 

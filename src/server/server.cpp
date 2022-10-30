@@ -1,5 +1,4 @@
 #include "server.hpp"
-
 #include <algorithm>
 #include <iostream>
 
@@ -8,9 +7,10 @@ constexpr int PORT = 4040;
 
 Server::Server()
 {
-    serverSocket = new Socket(std::string(""), PORT);
+    serverSocket = new Socket(PORT);
 }
 
+//When the server is running, add new connections to the vector of connections
 void Server::threadHandler()
 {
     int fd;
@@ -24,12 +24,14 @@ void Server::threadHandler()
     clientThread.detach();
 }
 
+//Set up the server connection by the bind and listen
 void Server::setup()
 {
     serverSocket->bind();
     serverSocket->listen();
 }
 
+//Generate a log when the connection is successful and start the loop for receive new messages and foward/broadcast them
 void Server::clientHandler(int fd)
 {
     send(fd, "Connection succeed", MAX_MESSAGE_SIZE, 0);
@@ -58,6 +60,7 @@ void Server::clientHandler(int fd)
     close(fd);
 }
 
+// Set the bool of running to false to shutdown the server
 void Server::kill()
 {
     isRunning = false;
@@ -72,6 +75,7 @@ void Server::kill()
     delete serverSocket;
 }
 
+//Initialize the server and main loop
 void Server::run()
 {
     isRunning = true;

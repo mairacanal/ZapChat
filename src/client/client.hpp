@@ -11,7 +11,6 @@ class Client {
 private:
     int port;
     bool isRunning;
-    std::string address;
     std::string user;
     Socket* ClientSocket;
     static Client* instance;
@@ -19,11 +18,11 @@ private:
 
 public:
     int maxMessageSize;
-    Client(int port, int maxMessageSize, std::string address, std::string user);
+    Client(int port, int maxMessageSize, std::string user);
     void Receive(char* message);
     void Connect(char* message);
     static Client* GetInstance();
-    static Client* GetInstance(int port, int maxMessageSize, std::string address, std::string user);
+    static Client* GetInstance(int port, int maxMessageSize, std::string user);
     void Disconnect();
     void SendMessage(std::string message);
     void Run();

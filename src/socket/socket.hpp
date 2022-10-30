@@ -19,7 +19,7 @@ private:
     struct sockaddr_in socketAddr;
 
 public:
-    Socket(std::string address, unsigned int port);
+    Socket(unsigned int port);
 
     ~Socket();
     // Bind, listen, connect, accept
