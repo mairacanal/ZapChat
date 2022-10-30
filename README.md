@@ -9,7 +9,7 @@
 - João Augusto Fernandes Barbosa - 11953348
 
 ## Sobre o Trabalho
-- **Versões do sistema operacional testadas:** Ubunut 22.04, Fedora 36
+- **Versões do sistema operacional testadas:** Ubuntu 22.04, Fedora 36
 - **Compiladores:** g++ 11 e 12
 - **Descrição:**<br>
 	O presente trabalho baseia-se na comunicação de diversos clientes através de um server, utilizando a lógica de implementação por Socket.
