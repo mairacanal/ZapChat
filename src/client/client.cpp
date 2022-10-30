@@ -12,22 +12,6 @@ Client::Client(int port, int maxMessageSize, std::string user)
     socket = new Socket(port);
 }
 
-/* Client* Client::GetInstance(int port, int maxMessageSize, std::string address, std::string user) */
-/* { */
-/*     if (instance == nullptr) */
-/*         instance = new Client(port, maxMessageSize, address, user); */
-
-/*     return instance; */
-/* } */
-
-/* Client* Client::GetInstance() */
-/* { */
-/*     if (instance == nullptr) { */
-/*         throw std::runtime_error("O comunicador ainda não foi inicializado"); */
-/*     } */
-/*     return instance; */
-/* } */
-
 void Client::Connect(char* message)
 {
     std::string connected = user + " joined the chat!";

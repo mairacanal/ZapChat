@@ -22,7 +22,6 @@ private:
     bool isRunning;
     std::string user;
     Socket* socket;
-    /* static Client* instance; */
 
 public:
     int maxMessageSize;
@@ -30,8 +29,6 @@ public:
     Client(int port, int maxMessageSize, std::string user);
 
     void Connect(char* message);
-    /* static Client* GetInstance(); */
-    /* static Client* GetInstance(int port, int maxMessageSize, std::string address, std::string user); */
     void Disconnect();
 
     // Thread function
