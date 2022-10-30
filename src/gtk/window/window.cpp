@@ -1,5 +1,4 @@
 #include "window.hpp"
-#include <iostream>
 
 /**
  * @brief Constructor for window class
@@ -14,9 +13,7 @@ Window::Window()
     , clientThread { nullptr }
 {
     set_login_hierarchy();
-
     draw_login_widgets();
-
     show_all_children();
 
     serverDispatcher.connect(
@@ -286,7 +283,9 @@ void Window::on_notification_from_client_thread()
 
 void Window::on_send_button_clicked()
 {
-    client.send_message(entry.get_text());
+    const Glib::ustring message = client.get_username() + ": "+ entry.get_text();
+
+    client.send_message(message);
     entry.set_text("");
 }
 

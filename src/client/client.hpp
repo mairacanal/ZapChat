@@ -39,6 +39,7 @@ public:
     void get_message(Glib::ustring* message) const;
 
     void set_username(Glib::ustring user);
+    Glib::ustring get_username() const;
 
     bool has_stopped() const;
 
