@@ -22,7 +22,7 @@ Socket::Socket(unsigned int port)
 {
     fd = socket(PF_INET, SOCK_STREAM, getprotobyname("tcp")->p_proto);
 
-    // Criação do socket retorna -1 caso não tenha sido efetuada corretamente
+    // Socket creation. Returns -1 if the connection fails.
     try {
         if (fd == -1)
             throw std::runtime_error("Socket's Error");
