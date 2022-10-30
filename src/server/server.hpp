@@ -2,10 +2,8 @@
 
 #include <cstring>
 #include <fstream>
-#include <map>
 #include <sstream>
 #include <stdexcept>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -17,6 +15,9 @@
  */
 class Server {
 private:
+    static constexpr int MAX_MESSAGE_SIZE = 256;
+    static constexpr int PORT = 4040;
+
     std::vector<int> connections;
     Socket* serverSocket;
     struct sockaddr_in serverAddr;

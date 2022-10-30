@@ -2,9 +2,6 @@
 #include <algorithm>
 #include <iostream>
 
-constexpr int MAX_MESSAGE_SIZE = 256;
-constexpr int PORT = 4040;
-
 /**
  * @brief Construct a new Server:: Server object
  *
@@ -22,9 +19,8 @@ void Server::thread_handler()
 {
     int fd;
 
-    if (isRunning && !serverSocket->accept(fd)) {
+    if (isRunning && !serverSocket->accept(fd))
         return;
-    }
 
     connections.push_back(fd);
     std::thread clientThread(&Server::client_handler, this, fd);

@@ -22,8 +22,12 @@ Socket::Socket(unsigned int port)
 
     // Address format
     socketAddr.sin_family = AF_INET;
-    socketAddr.sin_addr.s_addr = htonl(INADDR_ANY); // The socket accepts connections to all the IPs
-    socketAddr.sin_port = htons(port); // Set port
+
+    // The socket accepts connections to all the IPs
+    socketAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    // Set port
+    socketAddr.sin_port = htons(port);
 }
 
 /**
@@ -82,10 +86,12 @@ void Socket::listen()
  */
 bool Socket::accept(int& targetFileDescriptor)
 {
-    struct sockaddr_storage theirAddr; // Socket of connection
+    struct sockaddr_storage theirAddr;
 
     socklen_t addrSize = sizeof theirAddr;
-    targetFileDescriptor = ::accept(fd, (struct sockaddr*)&theirAddr, &addrSize); // Get a fileDescriptor for the client
+
+    // Get a fileDescriptor for the client
+    targetFileDescriptor = ::accept(fd, (struct sockaddr*)&theirAddr, &addrSize);
     return targetFileDescriptor == -1 ? false : true;
 }
 
