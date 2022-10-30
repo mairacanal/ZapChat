@@ -17,7 +17,7 @@
 	A definição do socket seguiu o padrão estrutural explicitado em aula, baseado no protocolo TCP.
 	
 ## Como Executar
-<strong>-Compilação: Comandos do Makefile:<strong/>
+<b>-Compilação: Comandos do Makefile:<b/>
 	<br/>
 	-make all: compila todos os arquivos necessários<br/>
 	-make clear: limpa os arquivos desnecessários<br/>
